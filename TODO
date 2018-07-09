@@ -1,8 +1,8 @@
 Todo:
-	☐ Start Abstract_VM
+	☐ Start Abstract_VM @started(18-07-08 21:00)
 	☐ Pseudo code main program
 
 Classes:
 	☐ Create Operand Template classe
-	☐ 
-
+	AbstractVm.cpp:
+		☐ Check and test the copy constructor ! ( deep copy ? )
