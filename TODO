@@ -1,6 +1,23 @@
 Todo:
 	☐ Start Abstract_VM @started(18-07-08 21:00)
-	☐ Pseudo code main program
+	☐ Parsing:
+		read file or instructions from stdin, split on space to get tokens
+		and stock that in linked list of linked list;
+	☐ Check instruction:
+		check if list[i][0] correspond to a valid instruction
+		if not, set error flag and add to error list the error and line
+	☐ Check args:
+		if instruction works with operand, check if operand is valid
+		int8(255)
+		int16()
+		int32()
+		float()
+		double()
+		split on '(' or ')' should give a vector(2)
+			[0] = int8 | int16 | int32 | float | double
+			[1] = ^[0-9]+\.?[0-9]*$
+		if vector size != 2, set error flag and add to error list the error and line
+	
 
 Classes:
 	☐ Create Operand Template classe

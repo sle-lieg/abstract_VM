@@ -6,7 +6,7 @@ int main(int ac, char **av)
 
 	try	{
 		if (ac == 1)
-			avm.fetchInstruction(std::cin);
+			avm.fetchInstructions(std::cin);
 		else
 		{
 			std::ifstream ifs;
@@ -14,10 +14,12 @@ int main(int ac, char **av)
 			for (int i = 1; i < ac; i++)
 			{
 				ifs.open(av[i]);
-				avm.fetchInstruction(ifs);
+				avm.fetchInstructions(ifs);
+				// avm.decodeInstructions();
+				av.executeInstructions
 				ifs.close();
 			}
-		}		
+		}
 	} catch (std::exception & e) {
 		std::cout << e.what() << std::endl;
 	}

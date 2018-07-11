@@ -4,6 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <stack>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 
@@ -20,7 +21,7 @@ class AbstractVM
 		AbstractVM( AbstractVM const & );
 		AbstractVM&	operator=( AbstractVM const & );
 
-		void	fetchInstruction( std::istream& file );
+		void	fetchInstructions( std::istream& file );
 
 		void	push( std::string value );
 		void	aassert( std::string value ) const;
@@ -38,13 +39,19 @@ class AbstractVM
 		IOperand const * createOperand(eOperandType type, std::string const & value) const;
 	
 	private:
+		std::list< std::list< std::string > >	_programInstructions;
+		std::vector< std::string >				_errors;
+
+
+		// **************** //
 		typedef IOperand const *(AbstractVM::*createFunc)(std::string const & value) const;
 		typedef void (AbstractVM::*instructions)(void);
-		
+
 		std::stack<IOperand *>		_stack;
 		std::map<std::string, int>	_opcode;
 		createFunc					_createFunc[5];
 		instructions				_instructions[10];
+      bool                    
 
 		IOperand const * createInt8( std::string const & value ) const;
 		IOperand const * createInt16( std::string const & value ) const;

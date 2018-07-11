@@ -58,8 +58,8 @@ AbstractVM&	AbstractVM::operator=(AbstractVM const & rhs)
 
 void	AbstractVM::fetchInstruction( std::istream& stream )
 {
-	std::vector<std::string> tokens;
-	std::string input;
+	std::vector<std::string>   tokens;
+	std::string                input;
 
 	while ( std::getline( stream, input ) )
 	{
@@ -118,6 +118,7 @@ void	AbstractVM::exit( void )
 
 void	AbstractVM::invalid( void )
 {
+   
 	throw std::invalid_argument::invalid_argument("bad instruction");
 }
 
