@@ -1,0 +1,6 @@
+; comment line
+; ; another comment line
+push int32(abc) ; valid comment
+push int32(abc); valid comment
+push int32(abc);valid comment
+push ;invalid comment int32(abc)

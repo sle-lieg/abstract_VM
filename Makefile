@@ -7,7 +7,7 @@ D_OBJ	= ./obj/
 D_INC	= ./inc/
 D_DEP	= ./dep/
 
-SRC_F	= main.cpp AbstractVM.cpp
+SRC_F	= main.cpp AbstractVM.cpp debug.cpp
 SRC		= $(addprefix $(D_SRC), $(SRC_F))
 
 OBJ		= $(SRC:$(D_SRC)%.cpp=$(D_OBJ)%.o)

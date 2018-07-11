@@ -1,9 +1,9 @@
 Todo:
 	☐ Start Abstract_VM @started(18-07-08 21:00)
-	☐ Parsing:
+	✔ Parsing: @done(18-07-11 14:50)
 		read file or instructions from stdin, split on space to get tokens
 		and stock that in linked list of linked list;
-	☐ Check instruction:
+	☐ decode instruction:
 		check if list[i][0] correspond to a valid instruction
 		if not, set error flag and add to error list the error and line
 	☐ Check args:

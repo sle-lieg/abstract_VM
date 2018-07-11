@@ -1,16 +1,18 @@
 #include "AbstractVM.hpp"
 
 AbstractVM::AbstractVM() :
-	_opcode{
-		{"pop", 1},
-		{"dump", 2},
-		{"add", 3},
-		{"sub", 4},
-		{"mul", 5},
-		{"div", 6},
-		{"mod", 7},
-		{"print", 8},
-		{"exit", 9}
+	_opcodes{
+		{"push", 1},
+		{"assert", 2},
+		{"pop", 3},
+		{"dump", 4},
+		{"add", 5},
+		{"sub", 6},
+		{"mul", 7},
+		{"div", 8},
+		{"mod", 9},
+		{"print", 10},
+		{"exit", 11}
 	}
 {
 	_createFunc[0] = &AbstractVM::createInt8;
@@ -48,33 +50,46 @@ AbstractVM&	AbstractVM::operator=(AbstractVM const & rhs)
 	return *this;
 }
 
-// // todo: remove
-// static void printT( std::vector <std::string> & v )
-// {
-// 	for (size_t n = 0; n < v.size(); n++)
-// 		std::cout << "\"" << v[ n ] << "\"\n";
-// 	std::cout << std::endl;
-// }
-
-void	AbstractVM::fetchInstruction( std::istream& stream )
+std::vector< std::vector< std::string > > &	AbstractVM::getProgramInstructions( void )
 {
-	std::vector<std::string>   tokens;
-	std::string                input;
+	return ( _programInstructions );
+}
+
+void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
+{
+	std::vector< std::string >	tokens;
+	std::string					input;
 
 	while ( std::getline( stream, input ) )
 	{
+		boost::trim( input );
+		if ( input[0] == ';' && input[1] == ';' && !isFromFile)
+			break ;
+		if ( input[0] == ';')
+			continue ;
 		boost::split( tokens, input, boost::is_any_of( " " ) );
-		// std::cout << input << std::endl;
-		// printT(tokens);
-		if ( tokens[0] == "push" )
-			push( tokens[1] );
-		else if ( tokens[0] == "assert" )
-			aassert( tokens[1] );
-		else
+		_programInstructions.push_back( tokens );
+	}
+}
+
+void	AbstractVM::decodeInstructions( void )
+{
+	for (int i = 0; i < _programInstructions.size(); i++)
+	{
+		int opcode = _opcodes[_programInstructions[i][0]];
+		if ( !opcode )
 		{
-			int opcode = _opcode[tokens[0]];
-			std::cout << "int= " << opcode << std::endl;
-			(this->*_instructions[opcode])();
+			std::string err = "error line " + std::to_string( i ) + ": invalid instruction \033[1;31m" + _programInstructions[i][0] + "\n\033[0m";
+			_errors.push_back( err );
+			continue ;
+		}
+		if ( opcode == PUSH || opcode == ASSERT )
+		{
+			if ( !checkOperand( _programInstructions[i][1] )
+			{
+			}
+			if ( _programInstructions[i].size() > 2 ) )
+			{}
 		}
 	}
 }
