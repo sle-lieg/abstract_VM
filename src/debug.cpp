@@ -1,8 +1,8 @@
 #include "AbstractVM.hpp"
 
-void printList( std::list< std::vector <std::string> > & v )
+void printList( std::vector< std::vector <std::string> > & v )
 {
-	for (listIterator it = v.begin(); it != v.end(); it++)
+	for (vIter it = v.begin(); it != v.end(); it++)
 	{
 		for (size_t j = 0; j < it->size(); j++)
 			std::cout << "\"" << (*it)[ j ] << "\" ";

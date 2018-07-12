@@ -67,30 +67,51 @@ void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
 			break ;
 		if ( input[0] == ';')
 			continue ;
-		boost::split( tokens, input, boost::is_any_of( " " ) );
+		boost::split( tokens, input, boost::is_any_of( " " ), boost::algorithm::token_compress_on );
 		_programInstructions.push_back( tokens );
 	}
 }
 
 void	AbstractVM::decodeInstructions( void )
 {
-	for (int i = 0; i < _programInstructions.size(); i++)
+	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
 		int opcode = _opcodes[_programInstructions[i][0]];
 		if ( !opcode )
 		{
-			std::string err = "error line " + std::to_string( i ) + ": invalid instruction \033[1;31m" + _programInstructions[i][0] + "\n\033[0m";
+			std::string err = "error line " + std::to_string( i ) + ": invalid instruction \"\033[1;31m" + _programInstructions[i][0] + "\"\n\033[0m";
 			_errors.push_back( err );
 			continue ;
 		}
-		if ( opcode == PUSH || opcode == ASSERT )
+		if ( _programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert" )
 		{
-			if ( !checkOperand( _programInstructions[i][1] )
+			std::regex	reg("^(((int8|int16|int32)\\([0-9]+\\))|(float|double)\\([0-9]+\\.[0-9]*\\))[ \t]*(;.*)?$");
+
+			if ( !std::regex_match( _programInstructions[i][1], reg ) )
 			{
+				std::string err = "error line " + std::to_string( i ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\"\n\033[0m";
+				_errors.push_back( err );
 			}
-			if ( _programInstructions[i].size() > 2 ) )
-			{}
+			if ( _programInstructions[i].size() > 2
+				&& _programInstructions[i][1].back() != ';'
+				&& _programInstructions[i][2].front() != ';' )
+			{
+				std::string err = "error line " + std::to_string( i ) + ": invalid comment: missing ';' ? \"\033[1;31m" + _programInstructions[i][2] + "\"\n\033[0m";
+				_errors.push_back( err );
+			}
 		}
+		else
+		{
+			if ( _programInstructions[i].size() > 1
+				&& _programInstructions[i][0].back() != ';'
+				&& _programInstructions[i][1].front() != ';' )
+			{
+				std::string err = "error line " + std::to_string( i ) + ": invalid comment: missing ';' ? \"\033[1;31m" + _programInstructions[i][1] + "\"\n\033[0m";
+				_errors.push_back( err );
+			}
+		}
+		// if ( _errors.size() == 0 )
+		// 	executeInstruction( _programInstructions[i] );
 	}
 }
 

@@ -7,14 +7,15 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <regex>
 
 typedef enum	eOperandType {
 	INT8, INT16, INT32, FLOAT, DOUBLE
 }				eOperandType;
 
-typedef enum	eInstructions {
-	PUSH, ASSERT, POP, DUMP, ADD, SUB, MUL, DIV, MOD, PRINT, EXIT
-}				eInstructions;
+// typedef enum	eInstructions {
+// 	PUSH, ASSERT, POP, DUMP, ADD, SUB, MUL, DIV, MOD, PRINT, EXIT
+// }				eInstructions;
 
 class IOperand;
 class AbstractVM
@@ -68,7 +69,7 @@ class AbstractVM
 };
 
 typedef	std::vector< std::vector< std::string > >::iterator vIter;
-void printList( std::list< std::vector <std::string> > & v );
+void printList( std::vector< std::vector <std::string> > & v );
 
 
 #endif
