@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include "AVMExceptions.hpp"
 
 typedef enum	eOperandType {
 	INT8, INT16, INT32, FLOAT, DOUBLE
@@ -51,7 +52,7 @@ class AbstractVM
 		std::vector< std::string >				_errors;
 		std::map<std::string, int>				_opcodes;
 
-
+		void	printErrors( void );
 		// **************** //
 		typedef IOperand const *(AbstractVM::*createFunc)(std::string const & value) const;
 		typedef void (AbstractVM::*instructions)(void);
@@ -69,7 +70,6 @@ class AbstractVM
 };
 
 typedef	std::vector< std::vector< std::string > >::iterator vIter;
-void printList( std::vector< std::vector <std::string> > & v );
-
+void	printList( std::vector< std::vector <std::string> > & v );
 
 #endif

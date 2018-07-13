@@ -1,3 +1,4 @@
-push int32(10.5)	// floating point value in int32
-push int32(abc)		// parsing error
-push float(1)		// integer value in float
+push int32(10.5)
+push int32(abc)
+push float(1)
+pop bla

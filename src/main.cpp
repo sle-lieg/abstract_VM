@@ -20,7 +20,6 @@ int main(int ac, char **av)
 				ifs.close();
 			}
 		}
-		printList(avm.getProgramInstructions());
 	} catch (std::exception & e) {
 		std::cout << e.what() << std::endl;
 	}
