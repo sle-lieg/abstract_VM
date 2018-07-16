@@ -1,14 +1,14 @@
 #ifndef ABSTRACT_VM_HPP
 # define ABSTRACT_VM_HPP
 
-#include <boost/algorithm/string.hpp>
-#include <stack>
-#include <vector>
-#include <map>
-#include <iostream>
-#include <fstream>
-#include <regex>
-#include "AVMExceptions.hpp"
+# include <boost/algorithm/string.hpp>
+# include <stack>
+# include <vector>
+# include <map>
+# include <iostream>
+# include <fstream>
+# include <regex>
+# include "AVMExceptions.hpp"
 
 typedef enum	eOperandType {
 	INT8, INT16, INT32, FLOAT, DOUBLE
@@ -46,7 +46,7 @@ class AbstractVM
 		void	invalid( void );
 
 		IOperand const * createOperand(eOperandType type, std::string const & value) const;
-	
+
 	private:
 		std::vector< std::vector< std::string > >	_programInstructions;
 		std::vector< std::string >				_errors;

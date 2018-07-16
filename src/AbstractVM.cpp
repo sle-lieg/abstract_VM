@@ -1,4 +1,5 @@
 #include "AbstractVM.hpp"
+# include "AVMExceptions.hpp"
 
 AbstractVM::AbstractVM() :
 	_opcodes{
@@ -86,7 +87,7 @@ void	AbstractVM::decodeInstructions( void )
 		int opcode = _opcodes[_programInstructions[i][0]];
 		if ( !opcode )
 		{
-			std::string err = "error line " + std::to_string( i+1 ) + ": invalid instruction \"\033[1;31m" + _programInstructions[i][0] + "\033[0m\"\n";
+			std::string err = "error line " + std::to_string( i+1 ) + ": invalid instruction \"\033[1;31m" + _programInstructions[i][0] + "\033[0m\"";
 			_errors.push_back( err );
 			continue ;
 		}
@@ -98,18 +99,15 @@ void	AbstractVM::decodeInstructions( void )
 			{
 				std::string err;
 				if (_programInstructions[i][1].empty())
-					err = "error line " + std::to_string( i+1 ) + ": missing operand\n";
+					err = "error line " + std::to_string( i+1 ) + ": missing operand";
 				else
-					err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"\n";
+					err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
 				_errors.push_back( err );
 			}
 		}
 	}
-	if (_errors.size() > 0)
-	{
-		// printErrors();
-		throw LexicalError(_errors);
-	}
+	if (!_errors.empty())
+		throw LexicalException(_errors);
 }
 
 void	AbstractVM::printErrors( void )
