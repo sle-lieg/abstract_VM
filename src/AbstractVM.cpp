@@ -1,5 +1,5 @@
 #include "AbstractVM.hpp"
-# include "AVMExceptions.hpp"
+#include <boost/lexical_cast.hpp>
 
 AbstractVM::AbstractVM() :
 	_opcodes{
@@ -85,8 +85,41 @@ void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
 	}
 }
 
+static int	checkOperandLimits(std::string & value)
+{
+	if (value.empty())
+		return (0);
+	std::vector< std::string > parsedValue;
+
+	boost::split(parsedValue, value, boost::is_any_of("()"));
+	double d = boost::lexical_cast<double>(parsedValue[1]);
+	if (parsedValue[0] == "int8")
+	{
+
+	}
+	else if (parsedValue[0] == "int16")
+	{
+		
+	}
+	else if (parsedValue[0] == "int32")
+	{
+		
+	}
+	else if (parsedValue[0] == "float")
+	{
+		
+	}
+	else if (parsedValue[0] == "double")
+	{
+		
+	}
+}
+
 void	AbstractVM::decodeInstructions( void )
 {
+	std::string err;
+	int limit = 0;
+
 	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
 		if (_programInstructions[i].size() == 0)
@@ -104,11 +137,18 @@ void	AbstractVM::decodeInstructions( void )
 
 			if (!std::regex_match(_programInstructions[i][1], reg))
 			{
-				std::string err;
 				if (_programInstructions[i][1].empty())
 					err = "error line " + std::to_string( i+1 ) + ": missing operand";
 				else
 					err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
+				_errors.push_back( err );
+			}
+			if ((limit = checkOperandLimits(_programInstructions[i][1])))
+			{
+				if (limit < 0)
+					err = "error line " + std::to_string( i+1 ) + ": underflow error: \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
+				else
+					err = "error line " + std::to_string( i+1 ) + ": overflow error: \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
 				_errors.push_back( err );
 			}
 		}
@@ -137,7 +177,8 @@ void	AbstractVM::executeInstruction( std::vector< std::string > const & instruct
 
 IOperand const * AbstractVM::createOperand(eOperandType type, std::string const & value) const
 {
-	
+	// Check for overflow and underflow of the value depending of the type
+	// Throw an error if of or uf
 }
 
 

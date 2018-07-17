@@ -52,18 +52,18 @@ class AbstractVM
 
 	private:
 		typedef void (AbstractVM::*instructions)(void);
+		typedef IOperand const *(AbstractVM::*createFunc)(std::string const & value) const;
 
 		std::vector< std::vector< std::string > >	_programInstructions;
 		std::vector< std::string >					_errors;
 		std::map< std::string, int >				_opcodes;
 		std::map< std::string, eOperandType >		_optype;
 		instructions								_instructions[10];
+		std::stack<IOperand *>						_stack;
 
-		void	printErrors( void );
+		void	_printErrors( void );
 		// **************** //
-		typedef IOperand const *(AbstractVM::*createFunc)(std::string const & value) const;
 
-		std::stack<IOperand *>		_stack;
 		createFunc					_createFunc[5];
 
 		IOperand const * createInt8( std::string const & value ) const;

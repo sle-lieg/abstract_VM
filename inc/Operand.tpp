@@ -7,19 +7,41 @@ template<typename T>
 class Operand : public IOperand
 {
 	public:
-		Operand( void );
-		~Operand( void );
-		Operand(Operand const &);
-		Operand&	operator=(Operand const &);
+		Operand( void )
+		{}
 
-		virtual int getPrecision( void ) const = 0; // Precision of the type of the instance
-		virtual eOperandType getType( void ) const = 0; // Type of the instance
-		virtual IOperand const * operator+( IOperand const & rhs ) const = 0; // Sum
-		virtual IOperand const * operator-( IOperand const & rhs ) const = 0; // Difference
-		virtual IOperand const * operator*( IOperand const & rhs ) const = 0; // Product
-		virtual IOperand const * operator/( IOperand const & rhs ) const = 0; // Quotient
-		virtual IOperand const * operator%( IOperand const & rhs ) const = 0; // Modulo
-		virtual std::string const & toString( void ) const = 0; // String representation of the instance
+		~Operand( void )
+		{}
+
+		Operand(Operand< T > const & rhs)
+		{}
+
+		Operand< t >&	operator=(Operand< T > const & rhs)
+		{}
+
+		int getPrecision( void ) const
+		{}
+
+		eOperandType getType( void ) const
+		{}
+
+		IOperand const * operator+( IOperand const & rhs ) const
+		{}
+
+		IOperand const * operator-( IOperand const & rhs ) const
+		{}
+
+		IOperand const * operator*( IOperand const & rhs ) const
+		{}
+
+		IOperand const * operator/( IOperand const & rhs ) const
+		{}
+
+		IOperand const * operator%( IOperand const & rhs ) const
+		{}
+
+		std::string const & toString( void ) const
+		{}
 
 	private:
 
