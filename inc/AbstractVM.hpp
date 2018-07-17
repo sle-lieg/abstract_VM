@@ -31,9 +31,12 @@ class AbstractVM
 
 		void	fetchInstructions( std::istream& file, bool isFromFile  );
 		void	decodeInstructions( void );
+		void	executeInstruction( std::vector< std::string > const & instruct );
 
-		void	push( std::string value );
-		void	aassert( std::string value ) const;
+		// void	push( std::string value );
+		// void	aassert( std::string value ) const;
+		void	push( IOperand const * value );
+		void	aassert( IOperand const * value ) const;
 		void	pop( void );
 		void	dump( void );
 		void	add( void );
@@ -48,18 +51,20 @@ class AbstractVM
 		IOperand const * createOperand(eOperandType type, std::string const & value) const;
 
 	private:
+		typedef void (AbstractVM::*instructions)(void);
+
 		std::vector< std::vector< std::string > >	_programInstructions;
-		std::vector< std::string >				_errors;
-		std::map<std::string, int>				_opcodes;
+		std::vector< std::string >					_errors;
+		std::map< std::string, int >				_opcodes;
+		std::map< std::string, eOperandType >		_optype;
+		instructions								_instructions[10];
 
 		void	printErrors( void );
 		// **************** //
 		typedef IOperand const *(AbstractVM::*createFunc)(std::string const & value) const;
-		typedef void (AbstractVM::*instructions)(void);
 
 		std::stack<IOperand *>		_stack;
 		createFunc					_createFunc[5];
-		instructions				_instructions[10];
 
 		IOperand const * createInt8( std::string const & value ) const;
 		IOperand const * createInt16( std::string const & value ) const;
@@ -71,5 +76,6 @@ class AbstractVM
 
 typedef	std::vector< std::vector< std::string > >::iterator vIter;
 void	printList( std::vector< std::vector <std::string> > & v );
+void	printVector( std::vector<std::string> & v );
 
 #endif

@@ -1,4 +1,8 @@
 ; comment ignored
+push int8((5); invalid
+push int8(5)); invalid
+push int8( 5); invalid
+push int8(5 ); invalid
 push int8(5); valid
 push int8(10.5); invalid
 push float(10.5) ; valid

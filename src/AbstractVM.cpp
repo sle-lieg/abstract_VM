@@ -14,6 +14,13 @@ AbstractVM::AbstractVM() :
 		{"mod", 9},
 		{"print", 10},
 		{"exit", 11}
+	},
+	_optype{
+		{"int8", INT8},
+		{"int16", INT16},
+		{"int32", INT32},
+		{"float", FLOAT},
+		{"double", DOUBLE}
 	}
 {
 	_createFunc[0] = &AbstractVM::createInt8;
@@ -95,7 +102,7 @@ void	AbstractVM::decodeInstructions( void )
 		{
 			std::regex	reg("^(((int8|int16|int32)\\([0-9]+\\))|(float|double)\\([0-9]+\\.[0-9]*\\))$");
 
-			if ( !std::regex_match( _programInstructions[i][1], reg ) )
+			if (!std::regex_match(_programInstructions[i][1], reg))
 			{
 				std::string err;
 				if (_programInstructions[i][1].empty())
@@ -105,23 +112,47 @@ void	AbstractVM::decodeInstructions( void )
 				_errors.push_back( err );
 			}
 		}
+		if (_errors.empty())
+			executeInstruction(_programInstructions[i]);
 	}
 	if (!_errors.empty())
 		throw LexicalException(_errors);
 }
 
-void	AbstractVM::printErrors( void )
+void	AbstractVM::executeInstruction( std::vector< std::string > const & instruct)
+{
+	IOperand const * operand = nullptr;
+	std::vector< std::string >	parsedOperand;
+	int opcode = _opcodes[instruct[0]];
+
+	if (opcode == 1 || opcode == 2)
+	{
+		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
+		operand = createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
+		opcode == 1 ? push(operand) : assert(operand);
+	}
+	else
+		(this->*_instructions[opcode])();
+}
+
+IOperand const * AbstractVM::createOperand(eOperandType type, std::string const & value) const
+{
+	
+}
+
+
+void	AbstractVM::_printErrors( void )
 {
 	for (std::vector< std::string >::iterator it = _errors.begin(); it != _errors.end(); it++)
 		std::cout << *it;
 }
 
-void	AbstractVM::push( std::string value )
+void	AbstractVM::push( IOperand const * value )
 {
 	std::cout << "Value pushed: " << value << std::endl;
 }
 
-void	AbstractVM::aassert( std::string value ) const
+void	AbstractVM::aassert( IOperand const * value ) const
 {
 	std::cout << "Value assert: " << value << std::endl;	
 }
