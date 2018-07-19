@@ -1,6 +1,7 @@
 #include "AbstractVM.hpp"
+#include "Operand.tpp"
 #include <boost/lexical_cast.hpp>
-
+ 
 AbstractVM::AbstractVM() :
 	_opcodes{
 		{"push", 1},
@@ -159,7 +160,8 @@ void	AbstractVM::decodeInstructions( void )
 		}
 		try {
 			executeInstruction(_programInstructions[i]);
-		} catch (boost::bad_lexical_cast const & e) {
+		// } catch (boost::bad_lexical_cast const & e) {
+		} catch (std::runtime_error const & e) {			
 			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
 			_errors.push_back( err );
 		}
@@ -218,37 +220,48 @@ auto	AbstractVM::_checkOperandLimits(eOperandType type, std::string  const & val
 
 IOperand const * AbstractVM::createOperand(eOperandType type, std::string const & value) const
 {
-	// IOperand* operand = nullptr;
-
-	// auto v = _checkOperandLimits(type, value);
 	IOperand const * operand = (this->*_createFunc[type])(value);
-	return (nullptr);
+	return (operand);
 }
 
 IOperand const * AbstractVM::createInt8( std::string const & value) const
 {
-	auto v = _checkOperandLimits(INT8, value);
-	return ( nullptr );
+	std::string err;
+	int n = 0;
+
+	try {
+		n = boost::lexical_cast<int>(value);
+		if (n < CHAR_MIN || n > CHAR_MAX)
+			throw boost::bad_lexical_cast();
+	} catch(boost::bad_lexical_cast const & e) {
+		if (value[0] == '-')
+			throw std::underflow_error("value " + value + " is lower than CHAR_MIN " + std::to_string(CHAR_MIN));
+		else
+			throw std::overflow_error("value " + value + " is lower than CHAR_MAX " + std::to_string(CHAR_MAX));
+	}
+	IOperand * op = new Operand<int8_t>("int8", INT8, static_cast<int8_t>(n));
+
+	return (op);
 }
 
 IOperand const * AbstractVM::createInt16( std::string const & value) const
 {
-	return ( nullptr );	
+	return ( nullptr );
 }
 
 IOperand const * AbstractVM::createInt32( std::string const & value) const
 {
-	return ( nullptr );	
+	return ( nullptr );
 }
 
 IOperand const * AbstractVM::createFloat( std::string const & value) const
 {
-	return ( nullptr );	
+	return ( nullptr );
 }
 
 IOperand const * AbstractVM::createDouble( std::string const & value) const
 {
-	return ( nullptr );	
+	return ( nullptr );
 }
 
 void	AbstractVM::_printErrors( void )
@@ -264,7 +277,7 @@ void	AbstractVM::push( IOperand const * value )
 
 void	AbstractVM::aassert( IOperand const * value ) const
 {
-	std::cout << "Value assert: " << value << std::endl;	
+	std::cout << "Value assert: " << value << std::endl;
 }
 
 void	AbstractVM::pop( void )

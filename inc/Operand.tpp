@@ -10,6 +10,10 @@ class Operand : public IOperand
 		Operand( void )
 		{}
 
+		Operand( std::string type, int precision, T value ) :
+			_type(type), _precision(precision), _value(value)
+		{}
+
 		~Operand( void )
 		{}
 
@@ -44,7 +48,9 @@ class Operand : public IOperand
 		{}
 
 	private:
-
+		std::string	_type;
+		int			_precision;
+		T			_value;
 };
 
 #endif

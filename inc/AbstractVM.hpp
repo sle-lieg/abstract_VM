@@ -9,6 +9,7 @@
 # include <fstream>
 # include <regex>
 # include "AVMExceptions.hpp"
+# include <climits>
 
 typedef enum	eOperandType {
 	INT8, INT16, INT32, FLOAT, DOUBLE
