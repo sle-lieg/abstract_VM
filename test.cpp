@@ -10,6 +10,7 @@ int main()
 	d = boost::lexical_cast<double>(s);
 	std::cout << (int)d << std::endl;
 
+	
 	// int8_t int8;
 	// int16_t int16;
 	// int32_t int32;

@@ -38,7 +38,7 @@ AbstractVM::AbstractVM() :
 	_instructions[6] = &AbstractVM::div;
 	_instructions[7] = &AbstractVM::mod;
 	_instructions[8] = &AbstractVM::print;
-	_instructions[9] = &AbstractVM::exit;
+	_instructions[9] = &AbstractVM::eexit;
 }
 
 AbstractVM::~AbstractVM( void )
@@ -63,6 +63,16 @@ std::vector< std::vector< std::string > > &	AbstractVM::getProgramInstructions( 
 	return ( _programInstructions );
 }
 
+double	AbstractVM::get_operand_value( void ) const
+{
+	return (_operand_value);
+}
+
+void	AbstractVM::set_operand_value( double n )
+{
+	_operand_value = n;
+}
+
 void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
 {
 	std::vector< std::string >	tokens;
@@ -85,43 +95,46 @@ void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
 	}
 }
 
-static int	checkOperandLimits(std::string & value)
-{
-	if (value.empty())
-		return (0);
-	std::vector< std::string > parsedValue;
+/*
+	int8(5)			int8 5
+	int16(1000)		int16 1000
+	int32(2000000)	int32 2000000
+	float(10.3)		float 10.3
+	double(15.5)	double 15.5
 
-	boost::split(parsedValue, value, boost::is_any_of("()"));
-	double d = boost::lexical_cast<double>(parsedValue[1]);
-	if (parsedValue[0] == "int8")
-	{
+	map T { int8: int8_t, int16: int16_t, int32: int32_t, float: float, double: double }
 
-	}
-	else if (parsedValue[0] == "int16")
-	{
-		
-	}
-	else if (parsedValue[0] == "int32")
-	{
-		
-	}
-	else if (parsedValue[0] == "float")
-	{
-		
-	}
-	else if (parsedValue[0] == "double")
-	{
-		
-	}
-}
+*/
+
+// int	AbstractVM::_checkOperandLimits(std::string & type, std::string & value)
+// {
+// 	if (value.empty())
+// 		return (0);
+// 	double						d = 0;
+
+// 	d = boost::lexical_cast<double>(value);
+// 	if (type == "int8")
+// 		boost::lexical_cast<int8_t>(d);
+// 	else if (type == "int16")
+// 		boost::lexical_cast<int16_t>(d);
+// 	else if (type == "int32")
+// 		boost::lexical_cast<int32_t>(d);
+// 	else if (type == "float")
+// 		boost::lexical_cast<float>(d);
+// 	set_operand_value(d);
+// 	return (0);
+// }
 
 void	AbstractVM::decodeInstructions( void )
 {
 	std::string err;
 	int limit = 0;
 
+	std::cout << _programInstructions.size() << std::endl;
 	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
+		std::cout << "i=" << i << std::endl;
+
 		if (_programInstructions[i].size() == 0)
 			continue ;
 		int opcode = _opcodes[_programInstructions[i][0]];
@@ -143,17 +156,13 @@ void	AbstractVM::decodeInstructions( void )
 					err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
 				_errors.push_back( err );
 			}
-			if ((limit = checkOperandLimits(_programInstructions[i][1])))
-			{
-				if (limit < 0)
-					err = "error line " + std::to_string( i+1 ) + ": underflow error: \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
-				else
-					err = "error line " + std::to_string( i+1 ) + ": overflow error: \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
-				_errors.push_back( err );
-			}
 		}
-		if (_errors.empty())
+		try {
 			executeInstruction(_programInstructions[i]);
+		} catch (boost::bad_lexical_cast const & e) {
+			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
+			_errors.push_back( err );
+		}
 	}
 	if (!_errors.empty())
 		throw LexicalException(_errors);
@@ -169,18 +178,78 @@ void	AbstractVM::executeInstruction( std::vector< std::string > const & instruct
 	{
 		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
 		operand = createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
-		opcode == 1 ? push(operand) : assert(operand);
+		if (_errors.empty)
+			opcode == 1 ? push(operand) : aassert(operand);
 	}
 	else
-		(this->*_instructions[opcode])();
+		if (_errors.empty)
+			(this->*_instructions[opcode])();
+}
+
+auto	AbstractVM::_checkOperandLimits(eOperandType type, std::string  const & value) const
+{
+	if (type == INT8)
+	{
+		int8_t n = boost::lexical_cast<int8_t>(value);
+		return (n);
+	}
+	if (type == INT16)
+	{
+		int16_t n = boost::lexical_cast<int16_t>(value);
+		return (n);
+	}
+	if (type == INT32)
+	{
+		int32_t n = boost::lexical_cast<int32_t>(value);
+		return (n);
+	}
+	if (type == FLOAT)
+	{
+		float n = boost::lexical_cast<float>(value);
+		return (n);
+	}
+	if (type == DOUBLE)
+	{
+		double n = boost::lexical_cast<double>(value);
+		return (n);
+	}
+	return (0);
 }
 
 IOperand const * AbstractVM::createOperand(eOperandType type, std::string const & value) const
 {
-	// Check for overflow and underflow of the value depending of the type
-	// Throw an error if of or uf
+	// IOperand* operand = nullptr;
+
+	// auto v = _checkOperandLimits(type, value);
+	IOperand const * operand = (this->*_createFunc[type])(value);
+	return (nullptr);
 }
 
+IOperand const * AbstractVM::createInt8( std::string const & value) const
+{
+	auto v = _checkOperandLimits(INT8, value);
+	return ( nullptr );
+}
+
+IOperand const * AbstractVM::createInt16( std::string const & value) const
+{
+	return ( nullptr );	
+}
+
+IOperand const * AbstractVM::createInt32( std::string const & value) const
+{
+	return ( nullptr );	
+}
+
+IOperand const * AbstractVM::createFloat( std::string const & value) const
+{
+	return ( nullptr );	
+}
+
+IOperand const * AbstractVM::createDouble( std::string const & value) const
+{
+	return ( nullptr );	
+}
 
 void	AbstractVM::_printErrors( void )
 {
@@ -222,36 +291,10 @@ void	AbstractVM::mod( void )
 void	AbstractVM::print( void )
 {}
 
-void	AbstractVM::exit( void )
+void	AbstractVM::eexit( void )
 {}
 
 void	AbstractVM::invalid( void )
 {
-   
 	throw std::invalid_argument::invalid_argument("bad instruction");
-}
-
-IOperand const * AbstractVM::createInt8( std::string const & ) const
-{
-	return ( nullptr );
-}
-
-IOperand const * AbstractVM::createInt16( std::string const & ) const
-{
-	return ( nullptr );	
-}
-
-IOperand const * AbstractVM::createInt32( std::string const & ) const
-{
-	return ( nullptr );	
-}
-
-IOperand const * AbstractVM::createFloat( std::string const & ) const
-{
-	return ( nullptr );	
-}
-
-IOperand const * AbstractVM::createDouble( std::string const & ) const
-{
-	return ( nullptr );	
 }

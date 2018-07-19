@@ -28,6 +28,9 @@ class AbstractVM
 		AbstractVM&	operator=( AbstractVM const & );
 
 		std::vector< std::vector< std::string > >	&	getProgramInstructions( void );
+		double											get_operand_value( void ) const;
+
+		void	set_operand_value( double n );
 
 		void	fetchInstructions( std::istream& file, bool isFromFile  );
 		void	decodeInstructions( void );
@@ -45,7 +48,7 @@ class AbstractVM
 		void	div( void );
 		void	mod( void );
 		void	print( void );
-		void	exit( void );
+		void	eexit( void );
 		void	invalid( void );
 
 		IOperand const * createOperand(eOperandType type, std::string const & value) const;
@@ -61,6 +64,8 @@ class AbstractVM
 		instructions								_instructions[10];
 		std::stack<IOperand *>						_stack;
 
+		double										_operand_value;
+
 		void	_printErrors( void );
 		// **************** //
 
@@ -72,6 +77,7 @@ class AbstractVM
 		IOperand const * createFloat( std::string const & value ) const;
 		IOperand const * createDouble( std::string const & value ) const;
 
+		auto _checkOperandLimits(eOperandType type, std::string const & value) const;
 };
 
 typedef	std::vector< std::vector< std::string > >::iterator vIter;
