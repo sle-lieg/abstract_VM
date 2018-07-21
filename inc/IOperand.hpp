@@ -1,7 +1,7 @@
 #ifndef IOPERAND_HPP
 # define IOPERAND_HPP
 
-#include "AbstractVM.hpp"
+#include "OperandFactory.hpp"
 
 class IOperand {
 	public:
