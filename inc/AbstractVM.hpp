@@ -10,7 +10,6 @@
 #include <boost/algorithm/string.hpp>
 #include "AVMExceptions.hpp"
 
-
 #include "OperandFactory.hpp"
 
 class IOperand;
@@ -52,7 +51,7 @@ class AbstractVM
 		std::map< std::string, int >				_opcodes;
 		std::map< std::string, eOperandType >		_optype;
 		instructions								_instructions[10];
-		std::stack<IOperand *>						_stack;
+		std::stack<IOperand const *>				_stack;
 
 		void	_printErrors( void );
 };

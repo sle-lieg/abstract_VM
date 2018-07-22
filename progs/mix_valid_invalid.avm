@@ -15,4 +15,4 @@ add ;valid
 add		; ;valid
 assert ; invalid
 assert int8(5); valid
-assert int8(5.5) ; valid
+assert int8(5.5) ; invalid

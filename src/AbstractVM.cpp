@@ -1,19 +1,19 @@
 #include "AbstractVM.hpp"
-// #include "Operand.tpp"
+#include "Operand.tpp"
  
 AbstractVM::AbstractVM() :
 	_opcodes{
-		{"push", 1},
-		{"assert", 2},
-		{"pop", 3},
-		{"dump", 4},
-		{"add", 5},
-		{"sub", 6},
-		{"mul", 7},
-		{"div", 8},
-		{"mod", 9},
-		{"print", 10},
-		{"exit", 11}
+		{"pop", 1},
+		{"dump", 2},
+		{"add", 3},
+		{"sub", 4},
+		{"mul", 5},
+		{"div", 6},
+		{"mod", 7},
+		{"print", 8},
+		{"exit", 9},
+		{"push", 10},
+		{"assert", 11}
 	},
 	_optype{
 		{"int8", INT8},
@@ -86,7 +86,7 @@ void	AbstractVM::decodeInstructions( void )
 	std::cout << _programInstructions.size() << std::endl;
 	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
-		std::cout << "i=" << i << std::endl;
+		// std::cout << "i=" << i << std::endl;
 		err = "";
 
 		if (_programInstructions[i].size() == 0)
@@ -100,7 +100,7 @@ void	AbstractVM::decodeInstructions( void )
 		}
 		if ( _programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert" )
 		{
-			std::regex	reg("^(((int8|int16|int32)\\([0-9]+\\))|(float|double)\\([0-9]+\\.[0-9]*\\))$");
+			std::regex	reg("^(((int8|int16|int32)\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
 			if (_programInstructions[i][1].empty())
 				err = "error line " + std::to_string( i+1 ) + ": missing operand";
@@ -114,8 +114,7 @@ void	AbstractVM::decodeInstructions( void )
 		} catch (std::runtime_error const & e) {
 			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
 			_errors.push_back( err );
-		}
-		catch (std::logic_error const & e) {
+		} catch (std::logic_error const & e) {
 			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
 			_errors.push_back( err );
 		}
@@ -130,12 +129,12 @@ void	AbstractVM::executeInstruction( std::vector< std::string > const & instruct
 	IOperand const * operand = nullptr;
 	int opcode = _opcodes[instruct[0]];
 
-	if (opcode == 1 || opcode == 2)
+	if (opcode == _opcodes["push"] || opcode == _opcodes["assert"])
 	{
 		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
 		operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
 		if (_errors.empty())
-			opcode == 1 ? push(operand) : aassert(operand);
+			opcode == _opcodes["push"] ? push(operand) : aassert(operand);
 	}
 	else
 		if (_errors.empty())
@@ -148,42 +147,69 @@ void	AbstractVM::_printErrors( void )
 		std::cout << *it;
 }
 
-void	AbstractVM::push( IOperand const * value )
+void	AbstractVM::push( IOperand const * operand )
 {
-	std::cout << "Value pushed: " << value << std::endl;
+	std::cout << "Value pushed: " << operand << std::endl;
+	_stack.push(operand);
 }
 
-void	AbstractVM::aassert( IOperand const * value ) const
+void	AbstractVM::aassert( IOperand const * operand ) const
 {
-	std::cout << "Value assert: " << value << std::endl;
+	std::cout << "Value assert: " << operand << std::endl;
+	if (operand->toString() != _stack.top()->toString())
+	{
+		throw Aassert_Exception("operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + _stack.top()->toString() + "\033[0m\"");
+	}
 }
 
 void	AbstractVM::pop( void )
-{}
+{
+	std::cout << "POP" << std::endl;
+	if (_stack.size())
+		_stack.pop();
+	else
+		throw EmptyStackException("Stack is empty");
+}
 
 void	AbstractVM::dump( void )
-{}
+{
+	std::cout << "DUMP" << std::endl;
+}
 
 void	AbstractVM::add( void )
-{}
+{
+	std::cout << "ADD" << std::endl;
+}
 
 void	AbstractVM::sub( void )
-{}
+{
+	std::cout << "SUB" << std::endl;
+}
 
 void	AbstractVM::mul( void )
-{}
+{
+	std::cout << "MUL" << std::endl;
+}
 
 void	AbstractVM::div( void )
-{}
+{
+	std::cout << "DIV" << std::endl;
+}
 
 void	AbstractVM::mod( void )
-{}
+{
+	std::cout << "MOD" << std::endl;
+}
 
 void	AbstractVM::print( void )
-{}
+{
+	std::cout << "PRINT" << std::endl;
+}
 
 void	AbstractVM::eexit( void )
-{}
+{
+	std::cout << "EXIT" << std::endl;
+}
 
 void	AbstractVM::invalid( void )
 {
