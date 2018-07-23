@@ -6,7 +6,10 @@ int main(int ac, char **av)
 
 	try	{
 		if (ac == 1)
+		{
 			avm.fetchInstructions(std::cin, false);
+			avm.decodeInstructions();
+		}
 		else
 		{
 			std::ifstream ifs;

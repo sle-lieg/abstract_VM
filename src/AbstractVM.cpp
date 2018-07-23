@@ -117,6 +117,9 @@ void	AbstractVM::decodeInstructions( void )
 		} catch (std::logic_error const & e) {
 			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
 			_errors.push_back( err );
+		} catch (std::exception const & e) {
+			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
+			_errors.push_back( err );
 		}
 	}
 	if (!_errors.empty())
@@ -150,15 +153,16 @@ void	AbstractVM::_printErrors( void )
 void	AbstractVM::push( IOperand const * operand )
 {
 	std::cout << "Value pushed: " << operand << std::endl;
-	_stack.push(operand);
+	_stack.insert(_stack.begin(), operand);
 }
 
 void	AbstractVM::aassert( IOperand const * operand ) const
 {
 	std::cout << "Value assert: " << operand << std::endl;
-	if (operand->toString() != _stack.top()->toString())
+	if (operand->toString() != (*_stack.begin())->toString())
 	{
-		throw Aassert_Exception("operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + _stack.top()->toString() + "\033[0m\"");
+		std::string err("operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + (*_stack.begin())->toString() + "\033[0m\"");
+		throw AassertException(err);
 	}
 }
 
@@ -166,7 +170,7 @@ void	AbstractVM::pop( void )
 {
 	std::cout << "POP" << std::endl;
 	if (_stack.size())
-		_stack.pop();
+		_stack.erase(_stack.begin());
 	else
 		throw EmptyStackException("Stack is empty");
 }
@@ -174,6 +178,7 @@ void	AbstractVM::pop( void )
 void	AbstractVM::dump( void )
 {
 	std::cout << "DUMP" << std::endl;
+	
 }
 
 void	AbstractVM::add( void )

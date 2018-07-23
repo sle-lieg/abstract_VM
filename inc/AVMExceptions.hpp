@@ -5,18 +5,34 @@
 #include <vector>
 #include <string>
 
-class LexicalException : public std::exception
+class GenericException : public std::exception
+{
+	public:
+		GenericException( std::vector< std::string > & errors );
+		GenericException( std::string const & error );
+		GenericException( GenericException const & );
+		GenericException & operator=( GenericException const & );
+		virtual ~GenericException( void );
+		virtual const char* what() const throw();
+	
+	protected:
+		GenericException( void );
+
+		std::string	_errors;	
+};
+
+class LexicalException : public GenericException
 {
 	public:
 		LexicalException( std::vector< std::string > & errors );
-		LexicalException( LexicalException const & );
 		virtual ~LexicalException( void );
-		virtual const char* what() const throw();
-	
-	private:
-		LexicalException( void );
-		LexicalException & operator=( LexicalException const & );
-		std::string						_errors;
+};
+
+class AassertException : public GenericException
+{
+	public:
+		AassertException( std::string & error );
+		virtual ~AassertException( void );
 };
 
 #endif

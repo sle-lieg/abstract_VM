@@ -1,7 +1,7 @@
 #include "AVMExceptions.hpp"
 #include <iostream>
 
-LexicalException::LexicalException( std::vector< std::string > & errors )
+GenericException::GenericException( std::vector< std::string > & errors )
 {
 	for (std::vector< std::string >::iterator it = errors.begin(); it != errors.end(); it++)
 	{
@@ -11,14 +11,40 @@ LexicalException::LexicalException( std::vector< std::string > & errors )
 	}
 }
 
-LexicalException::LexicalException( LexicalException const & rhs) :
+GenericException::GenericException( std::string const & error ) :
+	_errors(error)
+{}
+
+GenericException::GenericException( GenericException const & rhs) :
 	_errors(rhs._errors)
+{}
+
+GenericException & GenericException::operator=( GenericException const & rhs)
+{
+	if (this != &rhs)
+		_errors = rhs._errors;
+	return *this;
+}
+
+GenericException::~GenericException( void )
+{}
+
+const char* GenericException::what() const throw()
+{
+	return _errors.c_str();
+}
+
+
+LexicalException::LexicalException( std::vector< std::string > & errors ) :
+	GenericException(errors)
 {}
 
 LexicalException::~LexicalException( void )
 {}
 
-const char* LexicalException::what() const throw()
-{
-	return _errors.c_str();
-}
+AassertException::AassertException( std::string & error ) :
+	GenericException(error)
+{}
+
+AassertException::~AassertException( void )
+{}
