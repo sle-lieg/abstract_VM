@@ -56,7 +56,7 @@ void	AbstractVM::sub( void )
 	IOperand const * op_b = _stack[1];
 	pop();
 	pop();
-	push(*op_a - *op_b);
+	push(*op_b - *op_a);
 	delete op_a;
 	delete op_b;
 }
@@ -84,7 +84,7 @@ void	AbstractVM::div( void )
 	IOperand const * op_b = _stack[1];
 	pop();
 	pop();
-	push(*op_a / *op_b);
+	push(*op_b / *op_a);
 	delete op_a;
 	delete op_b;
 }
@@ -98,7 +98,7 @@ void	AbstractVM::mod( void )
 	IOperand const * op_b = _stack[1];
 	pop();
 	pop();
-	push(*op_a % *op_b);
+	push(*op_b % *op_a);
 	delete op_a;
 	delete op_b;
 }
@@ -113,13 +113,13 @@ void	AbstractVM::print( void )
 		std::string err("AssertException caught from \033[1;33mPRINT\033[0m instruction: value need to an INT8 integer");
 		throw AassertException(err);
 	}
-	std::string c = _stack[0]->toString();
-	std::cout << char(c) << std::endl;
+	std::cout << char(static_cast<char>(stoi(_stack[0]->toString()))) << std::endl;
 }
 
 void	AbstractVM::eexit( void )
 {
-	std::cout << "EXIT" << std::endl;
+	// std::cout << "EXIT" << std::endl;
+	_exit = true;
 }
 
 void	AbstractVM::invalid( void )

@@ -126,6 +126,8 @@ void	AbstractVM::decodeInstructions( void )
 			_errors.push_back( err );
 		}
 	}
+	if (!_exit)
+		_errors.push_back("error: instruction \"\033[1;33mEXIT\033[0m\" missing in the program");
 	if (!_errors.empty())
 		throw LexicalException(_errors);
 }

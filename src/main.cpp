@@ -14,15 +14,11 @@ int main(int ac, char **av)
 		{
 			std::ifstream ifs;
 			ifs.exceptions(std::ifstream::badbit);
-			for (int i = 1; i < ac; i++)
-			{
-				ifs.open(av[i]);
-				avm.fetchInstructions(ifs, true);
-				avm.decodeInstructions();
-				// av.executeInstructions();
-				ifs.close();
-			}
+			ifs.open(av[1]);
+			avm.fetchInstructions(ifs, true);
+			ifs.close();
 		}
+		avm.decodeInstructions();
 	} catch (std::exception & e) {
 		std::cout << e.what() << std::endl;
 	}

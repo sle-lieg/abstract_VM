@@ -52,6 +52,7 @@ class AbstractVM
 		std::map< std::string, eOperandType >		_optype;
 		instructions								_instructions[10];
 		std::vector<IOperand const *>				_stack;
+		bool										_exit;
 
 		void	_printErrors( void );
 };
