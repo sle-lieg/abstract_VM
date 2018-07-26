@@ -1,5 +1,5 @@
 #include "AbstractVM.hpp"
-#include "Operand.tpp"
+// #include "Operand.tpp"
  
 AbstractVM::AbstractVM() :
 	_opcodes{
@@ -83,7 +83,6 @@ void	AbstractVM::decodeInstructions( void )
 {
 	std::string err;
 
-	std::cout << _programInstructions.size() << std::endl;
 	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
 		// std::cout << "i=" << i << std::endl;
@@ -100,7 +99,7 @@ void	AbstractVM::decodeInstructions( void )
 		}
 		if ( _programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert" )
 		{
-			std::regex	reg("^(((int8|int16|int32)\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
+			std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
 			if (_programInstructions[i][1].empty())
 				err = "error line " + std::to_string( i+1 ) + ": missing operand";
@@ -108,6 +107,11 @@ void	AbstractVM::decodeInstructions( void )
 				err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
 			if (err.size())
 				_errors.push_back( err );
+		}
+		else if (_programInstructions[i].size() > 1)
+		{
+			err = "error line " + std::to_string( i+1 ) + ": instruction \"\033[1;33m" + _programInstructions[i][0] + "\033[0m\" takes no parameters";
+			_errors.push_back(err);
 		}
 		try {
 			executeInstruction(_programInstructions[i]);
@@ -150,73 +154,119 @@ void	AbstractVM::_printErrors( void )
 		std::cout << *it;
 }
 
-void	AbstractVM::push( IOperand const * operand )
-{
-	std::cout << "Value pushed: " << operand << std::endl;
-	_stack.insert(_stack.begin(), operand);
-}
+// void	AbstractVM::push( IOperand const * operand )
+// {
+// 	// std::cout << "Value pushed: " << operand << std::endl;
+// 	_stack.insert(_stack.begin(), operand);
+// }
 
-void	AbstractVM::aassert( IOperand const * operand ) const
-{
-	std::cout << "Value assert: " << operand << std::endl;
-	if (operand->toString() != (*_stack.begin())->toString())
-	{
-		std::string err("operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + (*_stack.begin())->toString() + "\033[0m\"");
-		throw AassertException(err);
-	}
-}
+// void	AbstractVM::aassert( IOperand const * operand ) const
+// {
+// 	// std::cout << "Value assert: " << operand << std::endl;
+// 	if (operand->toString() != _stack.front()->toString())
+// 	{
+// 		std::string err("AssertException caught: operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + (*_stack.begin())->toString() + "\033[0m\"");
+// 		throw AassertException(err);
+// 	}
+// }
 
-void	AbstractVM::pop( void )
-{
-	std::cout << "POP" << std::endl;
-	if (_stack.size())
-		_stack.erase(_stack.begin());
-	else
-		throw EmptyStackException("Stack is empty");
-}
+// void	AbstractVM::pop( void )
+// {
+// 	// std::cout << "POP" << std::endl;
+// 	if (_stack.size())
+// 		_stack.erase(_stack.begin());
+// 	else
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mPOP\033[0m instruction: Stack is empty");
+// }
 
-void	AbstractVM::dump( void )
-{
-	std::cout << "DUMP" << std::endl;
-	
-}
+// void	AbstractVM::dump( void )
+// {
+// 	// std::cout << "DUMP" << std::endl;
+// 	for (auto e: _stack)
+// 		std::cout << e->toString() << std::endl;
+// }
 
-void	AbstractVM::add( void )
-{
-	std::cout << "ADD" << std::endl;
-}
+// void	AbstractVM::add( void )
+// {
+// 	// std::cout << "ADD" << std::endl;
+// 	if (_stack.size() < 2)
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+// 	IOperand const * op_a = _stack[0];
+// 	IOperand const * op_b = _stack[1];
+// 	pop();
+// 	pop();
+// 	push(*op_a + *op_b);
+// 	delete op_a;
+// 	delete op_b;
+// }
 
-void	AbstractVM::sub( void )
-{
-	std::cout << "SUB" << std::endl;
-}
+// void	AbstractVM::sub( void )
+// {
+// 	// std::cout << "SUB" << std::endl;
+// 	if (_stack.size() < 2)
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+// 	IOperand const * op_a = _stack[0];
+// 	IOperand const * op_b = _stack[1];
+// 	pop();
+// 	pop();
+// 	push(*op_a - *op_b);
+// 	delete op_a;
+// 	delete op_b;
+// }
 
-void	AbstractVM::mul( void )
-{
-	std::cout << "MUL" << std::endl;
-}
+// void	AbstractVM::mul( void )
+// {
+// 	// std::cout << "MUL" << std::endl;
+// 	if (_stack.size() < 2)
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+// 	IOperand const * op_a = _stack[0];
+// 	IOperand const * op_b = _stack[1];
+// 	pop();
+// 	pop();
+// 	push(*op_a * *op_b);
+// 	delete op_a;
+// 	delete op_b;
+// }
 
-void	AbstractVM::div( void )
-{
-	std::cout << "DIV" << std::endl;
-}
+// void	AbstractVM::div( void )
+// {
+// 	// std::cout << "DIV" << std::endl;
+// 	if (_stack.size() < 2)
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+// 	IOperand const * op_a = _stack[0];
+// 	IOperand const * op_b = _stack[1];
+// 	pop();
+// 	pop();
+// 	push(*op_a / *op_b);
+// 	delete op_a;
+// 	delete op_b;
+// }
 
-void	AbstractVM::mod( void )
-{
-	std::cout << "MOD" << std::endl;
-}
+// void	AbstractVM::mod( void )
+// {
+// 	// std::cout << "MOD" << std::endl;
+// 	if (_stack.size() < 2)
+// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+// 	IOperand const * op_a = _stack[0];
+// 	IOperand const * op_b = _stack[1];
+// 	pop();
+// 	pop();
+// 	push(*op_a % *op_b);
+// 	delete op_a;
+// 	delete op_b;
+// }
 
-void	AbstractVM::print( void )
-{
-	std::cout << "PRINT" << std::endl;
-}
+// void	AbstractVM::print( void )
+// {
+// 	std::cout << "PRINT" << std::endl;
+// }
 
-void	AbstractVM::eexit( void )
-{
-	std::cout << "EXIT" << std::endl;
-}
+// void	AbstractVM::eexit( void )
+// {
+// 	std::cout << "EXIT" << std::endl;
+// }
 
-void	AbstractVM::invalid( void )
-{
-	throw std::invalid_argument::invalid_argument("bad instruction");
-}
+// void	AbstractVM::invalid( void )
+// {
+// 	throw std::invalid_argument::invalid_argument("bad instruction");
+// }

@@ -35,4 +35,12 @@ class AassertException : public GenericException
 		virtual ~AassertException( void );
 };
 
+class EmptyStackException : public GenericException
+{
+	public:
+		// EmptyStackException( std::string & error );
+		EmptyStackException( char const * error );
+		virtual ~EmptyStackException( void );
+};
+
 #endif

@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <map>
-// #include <stack>
+#include <algorithm>
 #include <regex>
 #include <iostream>
 #include <fstream>

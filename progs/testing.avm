@@ -1,0 +1,15 @@
+push int8(10)
+push int8(20)
+push int16(30)
+push int16(40)
+push int32(50)
+push int32(60)
+push float(80.5)
+push float(100.5)
+push double(110.5)
+push double(120.5)
+dump
+mod
+dump
+assert int16(210)
+pop

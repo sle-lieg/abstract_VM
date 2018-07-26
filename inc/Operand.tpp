@@ -69,7 +69,9 @@ class Operand : public IOperand
 			IOperand const * new_op;
 
 			if (rhs.toString() == "0")
-				throw std::logic_error("division by zero");
+				throw std::logic_error("modulo by zero");
+			if (_type == FLOAT || _type == DOUBLE || rhs.getType() == FLOAT || rhs.getType() == DOUBLE)
+				throw std::logic_error("modulo with floating point value impossible");
 			new_op = _factory.createOperand(std::max(_type, rhs.getType()), std::to_string(static_cast<int>(_value) % std::stoi(rhs.toString())));
 			return new_op;
 		}

@@ -48,3 +48,10 @@ AassertException::AassertException( std::string & error ) :
 
 AassertException::~AassertException( void )
 {}
+
+EmptyStackException::EmptyStackException( char const * error ) :
+	GenericException(error)
+{}
+
+EmptyStackException::~EmptyStackException( void )
+{}
