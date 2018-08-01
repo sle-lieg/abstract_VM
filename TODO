@@ -29,5 +29,5 @@ Instructions:
 	✔ mul @done(18-07-26 16:10)
 	✔ div @done(18-07-26 16:10)
 	✔ mod @done(18-07-26 16:10)
-	☐ print
-	☐ eexit
+	✔ print @done(18-08-01 11:00)
+	✔ eexit @done(18-08-01 11:00)

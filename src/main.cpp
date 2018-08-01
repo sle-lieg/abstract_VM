@@ -8,7 +8,6 @@ int main(int ac, char **av)
 		if (ac == 1)
 		{
 			avm.fetchInstructions(std::cin, false);
-			avm.decodeInstructions();
 		}
 		else
 		{
@@ -18,7 +17,7 @@ int main(int ac, char **av)
 			avm.fetchInstructions(ifs, true);
 			ifs.close();
 		}
-		avm.decodeInstructions();
+		avm.lexer();
 	} catch (std::exception & e) {
 		std::cout << e.what() << std::endl;
 	}

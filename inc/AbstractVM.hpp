@@ -25,8 +25,8 @@ class AbstractVM
 		double											get_operand_value( void ) const;
 
 		void	fetchInstructions( std::istream& file, bool isFromFile  );
-		void	decodeInstructions( void );
-		void	executeInstruction( std::vector< std::string > const & instruct );
+		void	lexer( void );
+		void	parser( std::vector< std::string > const & instruct );
 
 		void	push( IOperand const * value );
 		void	aassert( IOperand const * value ) const;
@@ -39,6 +39,16 @@ class AbstractVM
 		void	mod( void );
 		void	print( void );
 		void	eexit( void );
+
+		void	reverse( void );
+		void	get_max( void );
+		void	get_min( void );
+		void	clear( void );
+		void	power( void );
+		void	logic_and( void );
+		void	logic_or( void );
+		void	logic_xor( void );
+
 		void	invalid( void );
 
 	private:
@@ -50,7 +60,7 @@ class AbstractVM
 		std::vector< std::string >					_errors;
 		std::map< std::string, int >				_opcodes;
 		std::map< std::string, eOperandType >		_optype;
-		instructions								_instructions[10];
+		instructions								_instructions[18];
 		std::vector<IOperand const *>				_stack;
 		bool										_exit;
 

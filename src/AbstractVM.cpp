@@ -12,8 +12,18 @@ AbstractVM::AbstractVM() :
 		{"mod", 7},
 		{"print", 8},
 		{"exit", 9},
-		{"push", 10},
-		{"assert", 11}
+
+		{"reverse", 10},
+		{"get_max", 11},
+		{"get_min", 12},
+		{"clear", 13},
+		{"pow", 14},
+		{"and", 15},
+		{"or", 16},
+		{"xor", 17},
+
+		{"push", 18},
+		{"assert", 19}
 	},
 	_optype{
 		{"int8", INT8},
@@ -33,6 +43,14 @@ AbstractVM::AbstractVM() :
 	_instructions[7] = &AbstractVM::mod;
 	_instructions[8] = &AbstractVM::print;
 	_instructions[9] = &AbstractVM::eexit;
+	_instructions[10] = &AbstractVM::reverse;
+	_instructions[11] = &AbstractVM::get_max;
+	_instructions[12] = &AbstractVM::get_min;
+	_instructions[13] = &AbstractVM::clear;
+	_instructions[14] = &AbstractVM::power;
+	_instructions[15] = &AbstractVM::logic_and;
+	_instructions[16] = &AbstractVM::logic_or;
+	_instructions[17] = &AbstractVM::logic_xor;
 }
 
 AbstractVM::~AbstractVM( void )
@@ -69,26 +87,20 @@ void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
 		if ( input[0] == ';' && input[1] == ';' && !isFromFile)
 			break ;
 		input = std::regex_replace(input, comments, "");
-		if ( input.empty() )
-		{
-			_programInstructions.push_back( std::vector< std::string >() );
-			continue ;
-		}
 		boost::split( tokens, input, boost::is_any_of( " " ), boost::algorithm::token_compress_on );
 		_programInstructions.push_back( tokens );
 	}
 }
 
-void	AbstractVM::decodeInstructions( void )
+void	AbstractVM::lexer( void )
 {
 	std::string err;
 
 	for ( size_t i = 0; i < _programInstructions.size(); i++ )
 	{
-		// std::cout << "i=" << i << std::endl;
 		err = "";
 
-		if (_programInstructions[i].size() == 0)
+		if (_programInstructions[i][0].size() == 0)
 			continue ;
 		int opcode = _opcodes[_programInstructions[i][0]];
 		if ( !opcode )
@@ -114,7 +126,7 @@ void	AbstractVM::decodeInstructions( void )
 			_errors.push_back(err);
 		}
 		try {
-			executeInstruction(_programInstructions[i]);
+			parser(_programInstructions[i]);
 		} catch (std::runtime_error const & e) {
 			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
 			_errors.push_back( err );
@@ -126,27 +138,28 @@ void	AbstractVM::decodeInstructions( void )
 			_errors.push_back( err );
 		}
 	}
-	if (!_exit)
+	if (_exit == false)
 		_errors.push_back("error: instruction \"\033[1;33mEXIT\033[0m\" missing in the program");
 	if (!_errors.empty())
 		throw LexicalException(_errors);
 }
 
-void	AbstractVM::executeInstruction( std::vector< std::string > const & instruct)
+void	AbstractVM::parser( std::vector< std::string > const & instruct)
 {
 	std::vector< std::string >	parsedOperand;
 	IOperand const * operand = nullptr;
 	int opcode = _opcodes[instruct[0]];
+	std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
-	if (opcode == _opcodes["push"] || opcode == _opcodes["assert"])
+	if ((opcode == _opcodes["push"] || opcode == _opcodes["assert"]) && std::regex_match(instruct[1], reg))
 	{
 		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
 		operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
-		if (_errors.empty())
+		if (_errors.empty() && !_exit)
 			opcode == _opcodes["push"] ? push(operand) : aassert(operand);
 	}
 	else
-		if (_errors.empty())
+		if ((_errors.empty() && !_exit) || opcode == _opcodes["exit"])
 			(this->*_instructions[opcode])();
 }
 
@@ -155,120 +168,3 @@ void	AbstractVM::_printErrors( void )
 	for (std::vector< std::string >::iterator it = _errors.begin(); it != _errors.end(); it++)
 		std::cout << *it;
 }
-
-// void	AbstractVM::push( IOperand const * operand )
-// {
-// 	// std::cout << "Value pushed: " << operand << std::endl;
-// 	_stack.insert(_stack.begin(), operand);
-// }
-
-// void	AbstractVM::aassert( IOperand const * operand ) const
-// {
-// 	// std::cout << "Value assert: " << operand << std::endl;
-// 	if (operand->toString() != _stack.front()->toString())
-// 	{
-// 		std::string err("AssertException caught: operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + (*_stack.begin())->toString() + "\033[0m\"");
-// 		throw AassertException(err);
-// 	}
-// }
-
-// void	AbstractVM::pop( void )
-// {
-// 	// std::cout << "POP" << std::endl;
-// 	if (_stack.size())
-// 		_stack.erase(_stack.begin());
-// 	else
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mPOP\033[0m instruction: Stack is empty");
-// }
-
-// void	AbstractVM::dump( void )
-// {
-// 	// std::cout << "DUMP" << std::endl;
-// 	for (auto e: _stack)
-// 		std::cout << e->toString() << std::endl;
-// }
-
-// void	AbstractVM::add( void )
-// {
-// 	// std::cout << "ADD" << std::endl;
-// 	if (_stack.size() < 2)
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
-// 	IOperand const * op_a = _stack[0];
-// 	IOperand const * op_b = _stack[1];
-// 	pop();
-// 	pop();
-// 	push(*op_a + *op_b);
-// 	delete op_a;
-// 	delete op_b;
-// }
-
-// void	AbstractVM::sub( void )
-// {
-// 	// std::cout << "SUB" << std::endl;
-// 	if (_stack.size() < 2)
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
-// 	IOperand const * op_a = _stack[0];
-// 	IOperand const * op_b = _stack[1];
-// 	pop();
-// 	pop();
-// 	push(*op_a - *op_b);
-// 	delete op_a;
-// 	delete op_b;
-// }
-
-// void	AbstractVM::mul( void )
-// {
-// 	// std::cout << "MUL" << std::endl;
-// 	if (_stack.size() < 2)
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
-// 	IOperand const * op_a = _stack[0];
-// 	IOperand const * op_b = _stack[1];
-// 	pop();
-// 	pop();
-// 	push(*op_a * *op_b);
-// 	delete op_a;
-// 	delete op_b;
-// }
-
-// void	AbstractVM::div( void )
-// {
-// 	// std::cout << "DIV" << std::endl;
-// 	if (_stack.size() < 2)
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
-// 	IOperand const * op_a = _stack[0];
-// 	IOperand const * op_b = _stack[1];
-// 	pop();
-// 	pop();
-// 	push(*op_a / *op_b);
-// 	delete op_a;
-// 	delete op_b;
-// }
-
-// void	AbstractVM::mod( void )
-// {
-// 	// std::cout << "MOD" << std::endl;
-// 	if (_stack.size() < 2)
-// 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
-// 	IOperand const * op_a = _stack[0];
-// 	IOperand const * op_b = _stack[1];
-// 	pop();
-// 	pop();
-// 	push(*op_a % *op_b);
-// 	delete op_a;
-// 	delete op_b;
-// }
-
-// void	AbstractVM::print( void )
-// {
-// 	std::cout << "PRINT" << std::endl;
-// }
-
-// void	AbstractVM::eexit( void )
-// {
-// 	std::cout << "EXIT" << std::endl;
-// }
-
-// void	AbstractVM::invalid( void )
-// {
-// 	throw std::invalid_argument::invalid_argument("bad instruction");
-// }

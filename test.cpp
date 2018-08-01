@@ -4,9 +4,10 @@
 
 int main()
 {
-	int f1 = 4;
-	int f2 = 1;
-	int f3 = f1 % f2;
+	int f1 = 10;
+	float f2 = 2;
+	float f3 = f1 ^ f2;
+	std::cout << f1 << " / " << f2 << " = " << f3 << std::endl;
 //   double f = 3.14159;
 
 //   std::cout.unsetf ( std::ios::floatfield );                // floatfield not set

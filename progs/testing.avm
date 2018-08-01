@@ -1,5 +1,0 @@
-push int8(10)
-push int8(65)
-dump
-print
-pop

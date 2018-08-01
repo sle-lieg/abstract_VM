@@ -1,3 +1,4 @@
+;fe
 push int32(10.5)
 push int32(abc)
 push float(1)
