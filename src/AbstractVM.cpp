@@ -1,5 +1,5 @@
 #include "AbstractVM.hpp"
-// #include "Operand.tpp"
+#include "IOperand.hpp"
  
 AbstractVM::AbstractVM() :
 	_opcodes{
@@ -54,7 +54,14 @@ AbstractVM::AbstractVM() :
 }
 
 AbstractVM::~AbstractVM( void )
-{}
+{
+	// for (auto it = _stack.begin(); it != _stack.end(); it++)
+	// 	delete *it;
+	for_each(_stack.begin(), _stack.end(), [] (IOperand const * ptr) {
+		delete ptr;
+	});
+	_stack.clear();
+}
 
 AbstractVM::AbstractVM(AbstractVM const & rhs)
 {
@@ -147,16 +154,17 @@ void	AbstractVM::lexer( void )
 void	AbstractVM::parser( std::vector< std::string > const & instruct)
 {
 	std::vector< std::string >	parsedOperand;
-	IOperand const * operand = nullptr;
 	int opcode = _opcodes[instruct[0]];
 	std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
 	if ((opcode == _opcodes["push"] || opcode == _opcodes["assert"]) && std::regex_match(instruct[1], reg))
 	{
 		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
-		operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
+		IOperand const * operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
 		if (_errors.empty() && !_exit)
 			opcode == _opcodes["push"] ? push(operand) : aassert(operand);
+		else
+			delete operand;
 	}
 	else
 		if ((_errors.empty() && !_exit) || opcode == _opcodes["exit"])

@@ -13,12 +13,17 @@ void	AbstractVM::aassert( IOperand const * operand ) const
 {
 	// std::cout << "Value assert: " << operand << std::endl;
 	if (_stack.empty())
+	{
+		delete operand;
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mASSERT\033[0m instruction: Stack is empty");
+	}
 	if (operand->toString() != _stack.front()->toString())
 	{
 		std::string err("AssertException caught: operand value \"\033[1;33m" + operand->toString() + "\033[0m\" != stack top value \"\033[1;33m" + (*_stack.begin())->toString() + "\033[0m\"");
+		delete operand;
 		throw AassertException(err);
 	}
+	delete operand;
 }
 
 void	AbstractVM::pop( void )
@@ -26,12 +31,13 @@ void	AbstractVM::pop( void )
 	// std::cout << "POP" << std::endl;
 	if (_stack.empty())
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mPOP\033[0m instruction: Stack is empty");
+	delete _stack[0];
 	_stack.erase(_stack.begin());
 }
 
 void	AbstractVM::dump( void )
 {
-	std::cout << "DUMP" << std::endl;
+	// std::cout << "DUMP" << std::endl;
 	for (auto e: _stack)
 		std::cout << e->toString() << std::endl;
 }
@@ -43,11 +49,10 @@ void	AbstractVM::add( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c {*op_b + *op_a};
 	pop();
 	pop();
-	push(*op_a + *op_b);
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::sub( void )
@@ -57,11 +62,12 @@ void	AbstractVM::sub( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c {*op_b - *op_a};
 	pop();
 	pop();
-	push(*op_b - *op_a);
-	delete op_a;
-	delete op_b;
+	push(op_c);
+	// delete op_a;
+	// delete op_b;
 }
 
 void	AbstractVM::mul( void )
@@ -71,11 +77,10 @@ void	AbstractVM::mul( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c {*op_b * *op_a};
 	pop();
 	pop();
-	push(*op_a * *op_b);
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::div( void )
@@ -85,11 +90,10 @@ void	AbstractVM::div( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c {*op_b / *op_a};
 	pop();
 	pop();
-	push(*op_b / *op_a);
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::mod( void )
@@ -99,11 +103,10 @@ void	AbstractVM::mod( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c {*op_b % *op_a};
 	pop();
 	pop();
-	push(*op_b % *op_a);
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::print( void )
@@ -163,6 +166,9 @@ void	AbstractVM::get_min( void )
 void	AbstractVM::clear( void )
 {
 	std::cout << "CLEAR" << std::endl;
+	for_each(_stack.begin(), _stack.end(), [] (IOperand const * ptr) {
+		delete ptr;
+	});
 	_stack.clear();
 }
 
@@ -173,15 +179,12 @@ void	AbstractVM::power( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mPOWER\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
-	pop();
-	pop();
 	double v1 = stod(op_a->toString());
 	double v2 = stod(op_b->toString());
-
-	push(_factory.createOperand(std::max(op_a->getType(), op_b->getType()), std::to_string(pow(v2, v1))));
-
-	delete op_a;
-	delete op_b;
+	IOperand const * op_c = _factory.createOperand(std::max(op_a->getType(), op_b->getType()), std::to_string(pow(v2, v1)));
+	pop();
+	pop();
+	push(op_c);
 }
 
 void	AbstractVM::logic_and( void )
@@ -191,13 +194,10 @@ void	AbstractVM::logic_and( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mLOGIC_AND\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c = *op_b & *op_a;
 	pop();
 	pop();
-
-	push(*op_b & *op_a);
-
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::logic_or( void )
@@ -207,13 +207,10 @@ void	AbstractVM::logic_or( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mLOGIC_OR\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c = *op_b | *op_a;
 	pop();
 	pop();
-
-	push(*op_b | *op_a);
-
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::logic_xor( void )
@@ -223,13 +220,10 @@ void	AbstractVM::logic_xor( void )
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mLOGIC_XOR\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
+	IOperand const * op_c = *op_b ^ *op_a;
 	pop();
 	pop();
-
-	push(*op_b ^ *op_a);
-
-	delete op_a;
-	delete op_b;
+	push(op_c);
 }
 
 void	AbstractVM::invalid( void )

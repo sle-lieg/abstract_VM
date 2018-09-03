@@ -38,7 +38,6 @@ class AassertException : public GenericException
 class EmptyStackException : public GenericException
 {
 	public:
-		// EmptyStackException( std::string & error );
 		EmptyStackException( char const * error );
 		virtual ~EmptyStackException( void );
 };
