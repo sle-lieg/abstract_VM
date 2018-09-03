@@ -1,0 +1,51 @@
+;reverse
+push int32(10)
+push int32(9)
+push int32(8)
+dump
+reverse
+dump
+
+;max
+push int32(3)
+push int32(2)
+push int32(1)
+dump
+get_max
+dump
+
+;min
+get_min
+dump
+
+;clear
+clear
+dump
+
+;power
+push int32(3)
+push int32(2)
+dump
+pow
+dump
+
+;and
+push int32(40)
+dump
+and
+dump
+
+;or
+push int32(1)
+push int32(2)
+dump
+or
+dump
+
+;xor
+push int32(7)
+dump
+xor
+dump
+
+exit

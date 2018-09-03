@@ -1,0 +1,6 @@
+push int8(127) ;valid
+push int8(12) ;
+add
+dump
+push
+exit

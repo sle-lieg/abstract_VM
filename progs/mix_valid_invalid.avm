@@ -1,0 +1,19 @@
+; comment ignored
+push int8((5); invalid
+push int8(5)); invalid
+push int8( 5); invalid
+push int8(5 ); invalid
+push int8(5); valid
+push int8(10.5); invalid
+push float(10.5) ; valid
+push double(5)   ; invalid
+push double (5.5); invalid
+add;valid
+push ; invalid int8(10.5)
+push;invalid int8(10.5)
+add ;valid
+add		; ;valid
+assert ; invalid
+assert int8(5); valid
+assert int8(5.5) ; invalid
+exit

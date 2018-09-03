@@ -1,0 +1,33 @@
+Todo:
+	☐ Start Abstract_VM @started(18-07-08 21:00)
+	✔ Parsing: @done(18-07-11 14:50)
+		read file or instructions from stdin, split on space to get tokens
+		and stock that in linked list of linked list;
+	✔ decode instruction: @done(18-07-17 11:33) @lasted(33s)
+		check if list[i][0] correspond to a valid instruction
+		if not, set error flag and add to error list the error and line
+	✔ Check args: @done(18-07-26 10:18)
+		if instruction works with operand, check if operand is valid
+	
+
+Classes:
+	✔ Create Operand Template classe @done(18-07-26 10:18)
+	AbstractVm.cpp:
+		☐ Check and test the copy constructor ! ( deep copy ? )
+
+Exceptions:
+	✔ create AssertException @done(18-07-26 10:22)
+	✔ create EmptyStackException @done(18-07-26 14:23)
+
+Instructions:
+	✔ push @done(18-07-26 10:20)
+	✔ aassert @done(18-07-26 10:21)
+	✔ pop @done(18-07-26 15:52)
+	✔ dump @done(18-07-26 15:52)
+	✔ add @done(18-07-26 15:53)
+	✔ sub @done(18-07-26 16:10)
+	✔ mul @done(18-07-26 16:10)
+	✔ div @done(18-07-26 16:10)
+	✔ mod @done(18-07-26 16:10)
+	✔ print @done(18-08-01 11:00)
+	✔ eexit @done(18-08-01 11:00)
