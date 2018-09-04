@@ -10,12 +10,12 @@ int main()
 	std::cout << f1 << " / " << f2 << " = " << f3 << std::endl;
 //   double f = 3.14159;
 
-//   std::cout.unsetf ( std::ios::floatfield );                // floatfield not set
+//   std::cout.unsetf (std::ios::floatfield);                // floatfield not set
 //   std::cout.precision(5);
 //   std::cout << f << '\n';
 //   std::cout.precision(7);
 //   std::cout << f << '\n';
-//   std::cout.setf( std::ios::fixed, std:: ios::floatfield ); // floatfield set to fixed
+//   std::cout.setf(std::ios::fixed, std:: ios::floatfield); // floatfield set to fixed
 //   std::cout << f << '\n';
   return 0;
 }

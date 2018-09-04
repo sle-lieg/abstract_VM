@@ -8,15 +8,15 @@
 class GenericException : public std::exception
 {
 	public:
-		GenericException( std::vector< std::string > & errors );
-		GenericException( std::string const & error );
-		GenericException( GenericException const & );
-		GenericException & operator=( GenericException const & );
-		virtual ~GenericException( void );
+		GenericException(std::vector< std::string > & errors);
+		GenericException(std::string const & error);
+		GenericException(GenericException const &);
+		GenericException & operator=(GenericException const &);
+		virtual ~GenericException(void);
 		virtual const char* what() const throw();
 	
 	protected:
-		GenericException( void );
+		GenericException(void);
 
 		std::string	_errors;	
 };
@@ -24,22 +24,22 @@ class GenericException : public std::exception
 class LexicalException : public GenericException
 {
 	public:
-		LexicalException( std::vector< std::string > & errors );
-		virtual ~LexicalException( void );
+		LexicalException(std::vector< std::string > & errors);
+		virtual ~LexicalException(void);
 };
 
 class AassertException : public GenericException
 {
 	public:
-		AassertException( std::string & error );
-		virtual ~AassertException( void );
+		AassertException(std::string & error);
+		virtual ~AassertException(void);
 };
 
 class EmptyStackException : public GenericException
 {
 	public:
-		EmptyStackException( char const * error );
-		virtual ~EmptyStackException( void );
+		EmptyStackException(char const * error);
+		virtual ~EmptyStackException(void);
 };
 
 #endif

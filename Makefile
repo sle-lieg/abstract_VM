@@ -1,6 +1,6 @@
 NAME	= avm
 CC		= clang++
-FLAGS	= -Wall -Wextra -Werror -std=c++14
+FLAGS	= -Wall -Wextra -Werror -std=c++11
 
 D_SRC	= ./src/
 D_OBJ	= ./obj/

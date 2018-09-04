@@ -1,6 +1,6 @@
 #include "AbstractVM.hpp"
 
-void printList( std::vector< std::vector <std::string> > & v )
+void printList(std::vector< std::vector <std::string> > & v)
 {
 	for (vIter it = v.begin(); it != v.end(); it++)
 	{
@@ -11,7 +11,7 @@ void printList( std::vector< std::vector <std::string> > & v )
 	std::cout << std::endl;
 }
 
-void printVector( std::vector<std::string> & v )
+void printVector(std::vector<std::string> & v)
 {
 	for (std::vector<std::string>::iterator it = v.begin(); it != v.end(); it++)
 	{

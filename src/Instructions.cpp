@@ -3,13 +3,13 @@
 
 #include <cmath>
 
-void	AbstractVM::push( IOperand const * operand )
+void	AbstractVM::push(IOperand const * operand)
 {
 	// std::cout << "Value pushed: " << operand << std::endl;
 	_stack.insert(_stack.begin(), operand);
 }
 
-void	AbstractVM::aassert( IOperand const * operand ) const
+void	AbstractVM::aassert(IOperand const * operand) const
 {
 	// std::cout << "Value assert: " << operand << std::endl;
 	if (_stack.empty())
@@ -26,7 +26,7 @@ void	AbstractVM::aassert( IOperand const * operand ) const
 	delete operand;
 }
 
-void	AbstractVM::pop( void )
+void	AbstractVM::pop(void)
 {
 	// std::cout << "POP" << std::endl;
 	if (_stack.empty())
@@ -35,14 +35,14 @@ void	AbstractVM::pop( void )
 	_stack.erase(_stack.begin());
 }
 
-void	AbstractVM::dump( void )
+void	AbstractVM::dump(void)
 {
 	// std::cout << "DUMP" << std::endl;
 	for (auto e: _stack)
 		std::cout << e->toString() << std::endl;
 }
 
-void	AbstractVM::add( void )
+void	AbstractVM::add(void)
 {
 	// std::cout << "ADD" << std::endl;
 	if (_stack.size() < 2)
@@ -55,7 +55,7 @@ void	AbstractVM::add( void )
 	push(op_c);
 }
 
-void	AbstractVM::sub( void )
+void	AbstractVM::sub(void)
 {
 	// std::cout << "SUB" << std::endl;
 	if (_stack.size() < 2)
@@ -70,7 +70,7 @@ void	AbstractVM::sub( void )
 	// delete op_b;
 }
 
-void	AbstractVM::mul( void )
+void	AbstractVM::mul(void)
 {
 	// std::cout << "MUL" << std::endl;
 	if (_stack.size() < 2)
@@ -83,7 +83,7 @@ void	AbstractVM::mul( void )
 	push(op_c);
 }
 
-void	AbstractVM::div( void )
+void	AbstractVM::div(void)
 {
 	// std::cout << "DIV" << std::endl;
 	if (_stack.size() < 2)
@@ -96,7 +96,7 @@ void	AbstractVM::div( void )
 	push(op_c);
 }
 
-void	AbstractVM::mod( void )
+void	AbstractVM::mod(void)
 {
 	// std::cout << "MOD" << std::endl;
 	if (_stack.size() < 2)
@@ -109,7 +109,7 @@ void	AbstractVM::mod( void )
 	push(op_c);
 }
 
-void	AbstractVM::print( void )
+void	AbstractVM::print(void)
 {
 	// std::cout << "PRINT" << std::endl;
 	if (_stack.empty())
@@ -122,18 +122,18 @@ void	AbstractVM::print( void )
 	std::cout << char(static_cast<char>(stoi(_stack[0]->toString())));
 }
 
-void	AbstractVM::eexit( void )
+void	AbstractVM::eexit(void)
 {
 	// std::cout << "EXIT" << std::endl;
 	_exit = true;
 }
 
-void	AbstractVM::reverse( void )
+void	AbstractVM::reverse(void)
 {
 	std::reverse(begin(_stack), end(_stack));
 }
 
-void	AbstractVM::get_max( void )
+void	AbstractVM::get_max(void)
 {
 	std::cout << "MAX" << std::endl;
 	if (_stack.size() < 1)
@@ -148,7 +148,7 @@ void	AbstractVM::get_max( void )
 	_stack.erase(++max_elem);
 }
 
-void	AbstractVM::get_min( void )
+void	AbstractVM::get_min(void)
 {
 	std::cout << "MIN" << std::endl;
 	if (_stack.size() < 1)
@@ -163,7 +163,7 @@ void	AbstractVM::get_min( void )
 	_stack.erase(++min_elem);
 }
 
-void	AbstractVM::clear( void )
+void	AbstractVM::clear(void)
 {
 	std::cout << "CLEAR" << std::endl;
 	for_each(_stack.begin(), _stack.end(), [] (IOperand const * ptr) {
@@ -172,7 +172,7 @@ void	AbstractVM::clear( void )
 	_stack.clear();
 }
 
-void	AbstractVM::power( void )
+void	AbstractVM::power(void)
 {
 	std::cout << "POWER" << std::endl;
 	if (_stack.size() < 2)
@@ -187,7 +187,7 @@ void	AbstractVM::power( void )
 	push(op_c);
 }
 
-void	AbstractVM::logic_and( void )
+void	AbstractVM::logic_and(void)
 {
 	std::cout << "LOGIC_AND" << std::endl;
 	if (_stack.size() < 2)
@@ -200,7 +200,7 @@ void	AbstractVM::logic_and( void )
 	push(op_c);
 }
 
-void	AbstractVM::logic_or( void )
+void	AbstractVM::logic_or(void)
 {
 	std::cout << "LOGIC_OR" << std::endl;
 	if (_stack.size() < 2)
@@ -213,7 +213,7 @@ void	AbstractVM::logic_or( void )
 	push(op_c);
 }
 
-void	AbstractVM::logic_xor( void )
+void	AbstractVM::logic_xor(void)
 {
 	std::cout << "LOGIC_XOR" << std::endl;
 	if (_stack.size() < 2)
@@ -226,7 +226,7 @@ void	AbstractVM::logic_xor( void )
 	push(op_c);
 }
 
-void	AbstractVM::invalid( void )
+void	AbstractVM::invalid(void)
 {
 	throw std::invalid_argument::invalid_argument("bad instruction");
 }
