@@ -7,8 +7,7 @@ D_OBJ	= ./obj/
 D_INC	= ./inc/
 D_DEP	= ./dep/
 
-SRC_F	= main.cpp AbstractVM.cpp AVMExceptions.cpp OperandFactory.cpp debug.cpp\
-			Instructions.cpp
+SRC_F	= main.cpp AbstractVM.cpp AVMExceptions.cpp OperandFactory.cpp Instructions.cpp
 SRC		= $(addprefix $(D_SRC), $(SRC_F))
 
 OBJ		= $(SRC:$(D_SRC)%.cpp=$(D_OBJ)%.o)

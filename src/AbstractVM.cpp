@@ -51,10 +51,8 @@ AbstractVM::AbstractVM() :
 	_instructions[17] = &AbstractVM::logic_xor;
 }
 
-AbstractVM::~AbstractVM( void )
+AbstractVM::~AbstractVM(void)
 {
-	// for (auto it = _stack.begin(); it != _stack.end(); it++)
-	// 	delete *it;
 	for_each(_stack.begin(), _stack.end(), [] (IOperand const * ptr) {
 		delete ptr;
 	});
@@ -69,84 +67,87 @@ AbstractVM::AbstractVM(AbstractVM const & rhs)
 AbstractVM&	AbstractVM::operator=(AbstractVM const & rhs)
 {
 	if (this != &rhs)
-	{
 		_stack = rhs._stack;
-	}
 	return *this;
 }
 
-std::vector< std::vector< std::string > > &	AbstractVM::getProgramInstructions( void )
+std::vector< std::vector< std::string > > &	AbstractVM::getProgramInstructions(void)
 {
-	return ( _programInstructions );
+	return (_programInstructions);
 }
 
-void	AbstractVM::fetchInstructions( std::istream& stream, bool isFromFile )
+void	AbstractVM::fetchInstructions(std::istream& stream, bool isFromFile)
 {
 	std::vector< std::string >	tokens;
 	std::string					input;
 	std::regex					comments("[ \t]*;.*$");
 
-	while ( std::getline( stream, input ) )
+	while (std::getline(stream, input))
 	{
-		boost::trim( input );
-		if ( input[0] == ';' && input[1] == ';' && !isFromFile)
+		boost::trim(input);
+		if (input[0] == ';' && input[1] == ';' && !isFromFile)
 			break ;
 		input = std::regex_replace(input, comments, "");
-		boost::split( tokens, input, boost::is_any_of( " " ), boost::algorithm::token_compress_on );
-		_programInstructions.push_back( tokens );
+		boost::split(tokens, input, boost::is_any_of(" "), boost::algorithm::token_compress_on);
+		_programInstructions.push_back(tokens);
 	}
 }
 
-void	AbstractVM::lexer( void )
+bool	AbstractVM::isValid()
+{
+	return (_errors.empty());
+}
+
+void	AbstractVM::lexer(void)
 {
 	std::string err;
 
-	for ( size_t i = 0; i < _programInstructions.size(); i++ )
+	for (size_t i = 0; i < _programInstructions.size(); i++)
 	{
-		err = "";
+		err.clear();
 
 		// skip deleted comments
 		if (_programInstructions[i][0].size() == 0)
 			continue ;
 
+		// check if instruction is valid
 		int opcode = _opcodes[_programInstructions[i][0]];
-		if ( !opcode )
+		if (!opcode)
 		{
-			std::string err = "error line " + std::to_string( i+1 ) + ": invalid instruction \"\033[1;31m" + _programInstructions[i][0] + "\033[0m\"";
-			_errors.push_back( err );
+			std::string err = "error line " + std::to_string(i+1) + ": invalid instruction \"\033[1;31m" + _programInstructions[i][0] + "\033[0m\"";
+			_errors.push_back(err);
 			continue ;
 		}
 		else
 			_tokens.push_back(_programInstructions[i][0]);
 
-		if ( _programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert" )
+		// check if `push` and `assert` have only one and valid argument
+		if (_programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert")
 		{
 			std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
+			// no argument
 			if (_programInstructions[i][1].empty())
-				err = "error line " + std::to_string( i+1 ) + ": missing operand";
+				err = "error line " + std::to_string(i+1) + ": missing operand";
+			// invalid syntax argument
 			else if (!std::regex_match(_programInstructions[i][1], reg))
-				err = "error line " + std::to_string( i+1 ) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
-			if (err.size())
-				_errors.push_back( err );
+				err = "error line " + std::to_string(i+1) + ": invalid operand \"\033[1;31m" + _programInstructions[i][1] + "\033[0m\"";
+			// too many arguments
+			else if (_programInstructions[i].size() > 2)
+				err = "error line " + std::to_string(i+1) + ": instruction \"\033[1;33m" + _programInstructions[i][0] + "\033[0m\" takes only one parameter";
+
+			if (!err.empty())
+				_errors.push_back(err);	
+			else
+				_tokens.push_back(_programInstructions[i][1]);
 		}
 		else if (_programInstructions[i].size() > 1)
 		{
-			err = "error line " + std::to_string( i+1 ) + ": instruction \"\033[1;33m" + _programInstructions[i][0] + "\033[0m\" takes no parameters";
+			err = "error line " + std::to_string(i+1) + ": instruction \"\033[1;33m" + _programInstructions[i][0] + "\033[0m\" takes no parameters";
 			_errors.push_back(err);
 		}
-		try {
-			parser(_programInstructions[i]);
-		} catch (std::runtime_error const & e) {
-			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
-			_errors.push_back( err );
-		} catch (std::logic_error const & e) {
-			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
-			_errors.push_back( err );
-		} catch (std::exception const & e) {
-			err = "error line " + std::to_string( i+1 ) + ": " + e.what();
-			_errors.push_back( err );
-		}
+		if (_programInstructions[i][0] == "exit")
+			_exit = true;
 	}
 	if (_exit == false)
 		_errors.push_back("error: instruction \"\033[1;33mEXIT\033[0m\" missing in the program");
@@ -154,27 +155,28 @@ void	AbstractVM::lexer( void )
 		throw LexicalException(_errors);
 }
 
-void	AbstractVM::parser( std::vector< std::string > const & instruct)
+void	AbstractVM::parser()
 {
 	std::vector< std::string >	parsedOperand;
-	int opcode = _opcodes[instruct[0]];
 	std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
-	if ((opcode == _opcodes["push"] || opcode == _opcodes["assert"]) && std::regex_match(instruct[1], reg))
+	for (auto it = _tokens.begin(); it != _tokens.end(); it++)
 	{
-		boost::split( parsedOperand, instruct[1], boost::is_any_of( "()" ));
-		IOperand const * operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
-		if (_errors.empty() && !_exit)
+		int opcode = _opcodes[*it];
+
+		if (opcode == _opcodes["push"] || opcode == _opcodes["assert"])
+		{
+			it++;
+			boost::split(parsedOperand, *it, boost::is_any_of("()"));
+			IOperand const * operand = _factory.createOperand(_optype[parsedOperand[0]], parsedOperand[1]);
 			opcode == _opcodes["push"] ? push(operand) : aassert(operand);
+		}
 		else
-			delete operand;
-	}
-	else
-		if ((_errors.empty() && !_exit) || opcode == _opcodes["exit"])
 			(this->*_instructions[opcode])();
+	}
 }
 
-void	AbstractVM::_printErrors( void )
+void	AbstractVM::_printErrors(void)
 {
 	for (std::vector< std::string >::iterator it = _errors.begin(); it != _errors.end(); it++)
 		std::cout << *it;

@@ -2,6 +2,7 @@
 ; sample.avm -
 ; -------------
 push int32(42)
+assert int32(42)
 push int32(33)
 add;poney
 push float(44.55)

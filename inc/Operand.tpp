@@ -8,7 +8,7 @@ class Operand : public IOperand
 {
 	public:
 
-		Operand( eOperandType type, int precision, T value ) :
+		Operand(eOperandType type, int precision, T value) :
 			_type(type), _precision(precision), _value(value), _str_value(std::to_string(value))
 		{
 			if (_str_value.find_first_of('.') != std::string::npos)
@@ -16,7 +16,7 @@ class Operand : public IOperand
 					_str_value.pop_back();
 		}
 
-		~Operand( void ) {}
+		~Operand(void) {}
 
 		Operand(Operand<T> const & rhs) { *this = rhs; }
 
@@ -32,10 +32,10 @@ class Operand : public IOperand
 			return *this;
 		}
 
-		int				getPrecision( void ) const { return _precision; }
-		eOperandType	getType( void ) const { return _type; }
+		int				getPrecision(void) const { return _precision; }
+		eOperandType	getType(void) const { return _type; }
 
-		IOperand const * operator+( IOperand const & rhs ) const
+		IOperand const * operator+(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -43,7 +43,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator-( IOperand const & rhs ) const
+		IOperand const * operator-(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -51,7 +51,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator*( IOperand const & rhs ) const
+		IOperand const * operator*(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -59,7 +59,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator/( IOperand const & rhs ) const
+		IOperand const * operator/(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -70,7 +70,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator%( IOperand const & rhs ) const
+		IOperand const * operator%(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -82,7 +82,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator&( IOperand const & rhs ) const
+		IOperand const * operator&(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -92,7 +92,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator|( IOperand const & rhs ) const
+		IOperand const * operator|(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -102,7 +102,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		IOperand const * operator^( IOperand const & rhs ) const
+		IOperand const * operator^(IOperand const & rhs) const
 		{
 			IOperand const * new_op;
 
@@ -112,7 +112,7 @@ class Operand : public IOperand
 			return new_op;
 		}
 
-		std::string const & toString( void ) const
+		std::string const & toString(void) const
 		{
 			return _str_value;
 		}
@@ -125,7 +125,7 @@ class Operand : public IOperand
 		T				_value;
 		std::string		_str_value;
 
-		Operand( void )
+		Operand(void)
 		{}
 };
 

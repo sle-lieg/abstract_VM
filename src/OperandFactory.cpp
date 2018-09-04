@@ -3,7 +3,7 @@
 #include "Operand.tpp"
 #include <limits>
 
-OperandFactory::OperandFactory( void )
+OperandFactory::OperandFactory(void)
 {
 	_createFunc[0] = &OperandFactory::createInt8;
 	_createFunc[1] = &OperandFactory::createInt16;
@@ -12,7 +12,7 @@ OperandFactory::OperandFactory( void )
 	_createFunc[4] = &OperandFactory::createDouble;
 }
 
-OperandFactory::~OperandFactory( void ) {}
+OperandFactory::~OperandFactory(void) {}
 
 IOperand const * OperandFactory::createOperand(eOperandType type, std::string const & value) const
 {
@@ -20,7 +20,7 @@ IOperand const * OperandFactory::createOperand(eOperandType type, std::string co
 	return (operand);
 }
 
-IOperand const * OperandFactory::createInt8( std::string const & value) const
+IOperand const * OperandFactory::createInt8(std::string const & value) const
 {
 	int n = 0;
 
@@ -38,7 +38,7 @@ IOperand const * OperandFactory::createInt8( std::string const & value) const
 	return (op);
 }
 
-IOperand const * OperandFactory::createInt16( std::string const & value) const
+IOperand const * OperandFactory::createInt16(std::string const & value) const
 {
 	int n = 0;
 
@@ -57,7 +57,7 @@ IOperand const * OperandFactory::createInt16( std::string const & value) const
 	return (op);
 }
 
-IOperand const * OperandFactory::createInt32( std::string const & value) const
+IOperand const * OperandFactory::createInt32(std::string const & value) const
 {
 	int n = 0;
 
@@ -74,7 +74,7 @@ IOperand const * OperandFactory::createInt32( std::string const & value) const
 	return (op);
 }
 
-IOperand const * OperandFactory::createFloat( std::string const & value) const
+IOperand const * OperandFactory::createFloat(std::string const & value) const
 {
 	long double n = 0;
 
@@ -93,7 +93,7 @@ IOperand const * OperandFactory::createFloat( std::string const & value) const
 	return (op);
 }
 
-IOperand const * OperandFactory::createDouble( std::string const & value) const
+IOperand const * OperandFactory::createDouble(std::string const & value) const
 {
 	long double n = 0;
 
