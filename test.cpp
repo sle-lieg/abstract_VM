@@ -1,21 +1,38 @@
-#include <iostream>
-#include <sstream>
-#include <boost/lexical_cast.hpp>
+// example on extraction
+#include <iostream>     // std::cin, std::cout, std::hex
+#include <fstream>
 
-int main()
+void	testing(std::istream & ost)
 {
-	int f1 = 10;
-	float f2 = 2;
-	float f3 = f1 ^ f2;
-	std::cout << f1 << " / " << f2 << " = " << f3 << std::endl;
-//   double f = 3.14159;
+	// ost >> std::noskipws;
+	// std::string tok;
+	char c;
+	while (ost.get(c))
+	{
+		// ost >> tok;
+		if (c == '\n')
+			std::cout << "POUET";
+		std::cout << c;
+	}
+}
 
-//   std::cout.unsetf ( std::ios::floatfield );                // floatfield not set
-//   std::cout.precision(5);
-//   std::cout << f << '\n';
-//   std::cout.precision(7);
-//   std::cout << f << '\n';
-//   std::cout.setf( std::ios::fixed, std:: ios::floatfield ); // floatfield set to fixed
-//   std::cout << f << '\n';
+int main () {
+
+	// std::ifstream ifs;
+	// ifs.exceptions(std::ifstream::badbit);
+	// ifs.open("progs/pdf.avm");
+	// testing(ifs);
+	// ifs.close();
+	testing(std::cin);
+//   int n;
+
+//   std::cout << "Enter a number: ";
+//   std::cin >> n;
+//   std::cout << "You have entered: " << n << '\n';
+
+//   std::cout << "Enter a hexadecimal number: ";
+//   std::cin >> std::hex >> n;         // manipulator
+//   std::cout << "Its decimal equivalent is: " << n << '\n';
+
   return 0;
 }

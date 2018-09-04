@@ -58,6 +58,7 @@ class AbstractVM
 
 		std::vector< std::vector< std::string > >	_programInstructions;
 		std::vector< std::string >					_errors;
+		std::vector< std::string >					_tokens;
 		std::map< std::string, int >				_opcodes;
 		std::map< std::string, eOperandType >		_optype;
 		instructions								_instructions[18];

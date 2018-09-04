@@ -12,7 +12,6 @@ AbstractVM::AbstractVM() :
 		{"mod", 7},
 		{"print", 8},
 		{"exit", 9},
-
 		{"reverse", 10},
 		{"get_max", 11},
 		{"get_min", 12},
@@ -21,7 +20,6 @@ AbstractVM::AbstractVM() :
 		{"and", 15},
 		{"or", 16},
 		{"xor", 17},
-
 		{"push", 18},
 		{"assert", 19}
 	},
@@ -107,8 +105,10 @@ void	AbstractVM::lexer( void )
 	{
 		err = "";
 
+		// skip deleted comments
 		if (_programInstructions[i][0].size() == 0)
 			continue ;
+
 		int opcode = _opcodes[_programInstructions[i][0]];
 		if ( !opcode )
 		{
@@ -116,6 +116,9 @@ void	AbstractVM::lexer( void )
 			_errors.push_back( err );
 			continue ;
 		}
+		else
+			_tokens.push_back(_programInstructions[i][0]);
+
 		if ( _programInstructions[i][0] == "push" || _programInstructions[i][0] == "assert" )
 		{
 			std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
