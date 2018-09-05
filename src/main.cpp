@@ -1,14 +1,23 @@
 #include "AbstractVM.hpp"
+#include "sys/types.h"
+#include "sys/stat.h"
 
 int main(int ac, char **av)
 {
-	AbstractVM avm;
+	AbstractVM	avm;
+	struct stat	buf;
 
 	try	{
 		if (ac == 1)
 			avm.fetchInstructions(std::cin, false);
 		else
 		{
+			stat(av[1], &buf);
+			if ((buf.st_mode & S_IFMT) != S_IFREG)
+			{
+				std::cout << "Error: argument is not a valid filename" << std::endl;
+				return -1;
+			}
 			std::ifstream ifs;
 			ifs.exceptions(std::ifstream::failbit);
 			ifs.open(av[1]);

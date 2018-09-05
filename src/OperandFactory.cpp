@@ -52,7 +52,7 @@ IOperand const * OperandFactory::createInt16(std::string const & value) const
 		else
 			throw std::overflow_error("value \033[1;33m" + value + "\033[0m is higher than INT16_MAX");
 	}
-	IOperand * op = new Operand<int16_t>(INT16, INT16, static_cast<int8_t>(n));
+	IOperand * op = new Operand<int16_t>(INT16, INT16, static_cast<int16_t>(n));
 
 	return (op);
 }

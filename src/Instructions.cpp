@@ -53,7 +53,7 @@ void	AbstractVM::add(void)
 void	AbstractVM::sub(void)
 {
 	if (_stack.size() < 2)
-		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+		throw EmptyStackException("EmptyStackException caught from \033[1;33mSUB\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
 	IOperand const * op_c {*op_b - *op_a};
@@ -65,7 +65,7 @@ void	AbstractVM::sub(void)
 void	AbstractVM::mul(void)
 {
 	if (_stack.size() < 2)
-		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+		throw EmptyStackException("EmptyStackException caught from \033[1;33mMUL\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
 	IOperand const * op_c {*op_b * *op_a};
@@ -77,7 +77,7 @@ void	AbstractVM::mul(void)
 void	AbstractVM::div(void)
 {
 	if (_stack.size() < 2)
-		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+		throw EmptyStackException("EmptyStackException caught from \033[1;33mDIV\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
 	IOperand const * op_c {*op_b / *op_a};
@@ -89,7 +89,7 @@ void	AbstractVM::div(void)
 void	AbstractVM::mod(void)
 {
 	if (_stack.size() < 2)
-		throw EmptyStackException("EmptyStackException caught from \033[1;33mADD\033[0m instruction: need minimum 2 values in the stack");
+		throw EmptyStackException("EmptyStackException caught from \033[1;33mMOD\033[0m instruction: need minimum 2 values in the stack");
 	IOperand const * op_a = _stack[0];
 	IOperand const * op_b = _stack[1];
 	IOperand const * op_c {*op_b % *op_a};
@@ -104,7 +104,7 @@ void	AbstractVM::print(void)
 		throw EmptyStackException("EmptyStackException caught from \033[1;33mPRINT\033[0m instruction: stack is empty");
 	if (_stack[0]->getType() > INT8)
 	{
-		std::string err("AssertException caught from \033[1;33mPRINT\033[0m instruction: value need to be an INT8 integer");
+		std::string err("Type exception caught from \033[1;33mPRINT\033[0m instruction: value need to be an INT8 integer");
 		throw AassertException(err);
 	}
 	std::cout << static_cast<char>(stoi(_stack[0]->toString()));

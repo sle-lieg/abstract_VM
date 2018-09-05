@@ -13,8 +13,8 @@ AbstractVM::AbstractVM() :
 		{"print", 8},
 		{"exit", 9},
 		{"reverse", 10},
-		{"get_max", 11},
-		{"get_min", 12},
+		{"max", 11},
+		{"min", 12},
 		{"clear", 13},
 		{"pow", 14},
 		{"and", 15},
@@ -146,11 +146,7 @@ void	AbstractVM::lexer(void)
 			err = "error line " + std::to_string(i+1) + ": instruction \"\033[1;33m" + _programInstructions[i][0] + "\033[0m\" takes no parameters";
 			_errors.push_back(err);
 		}
-		if (_programInstructions[i][0] == "exit")
-			_exit = true;
 	}
-	if (_exit == false)
-		_errors.push_back("error: instruction \"\033[1;33mEXIT\033[0m\" missing in the program");
 	if (!_errors.empty())
 		throw LexicalException(_errors);
 }
@@ -160,7 +156,7 @@ void	AbstractVM::parser()
 	std::vector< std::string >	parsedOperand;
 	std::regex	reg("^(((int(8|16|32))\\(-?[0-9]+\\))|(float|double)\\(-?[0-9]+\\.[0-9]*\\))$");
 
-	for (auto it = _tokens.begin(); it != _tokens.end(); it++)
+	for (auto it = _tokens.begin(); !_exit && it != _tokens.end(); it++)
 	{
 		int opcode = _opcodes[*it];
 
@@ -174,6 +170,8 @@ void	AbstractVM::parser()
 		else
 			(this->*_instructions[opcode])();
 	}
+	if (_exit == false)
+		std::cerr << "error: instruction \"\033[1;33mEXIT\033[0m\" missing in the program";
 }
 
 void	AbstractVM::_printErrors(void)

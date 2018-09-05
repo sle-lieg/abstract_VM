@@ -65,7 +65,6 @@ class Operand : public IOperand
 
 			if (rhs.toString() == "0")
 				throw std::logic_error("division by zero");
-			// std::cout << "lhs= " << _value << " rhs= " << rhs.toString() << std::endl;
 			new_op = _factory.createOperand(std::max(_type, rhs.getType()), std::to_string(_value / std::stod(rhs.toString())));
 			return new_op;
 		}
@@ -125,8 +124,7 @@ class Operand : public IOperand
 		T				_value;
 		std::string		_str_value;
 
-		Operand(void)
-		{}
+		Operand(void){}
 };
 
 #endif
